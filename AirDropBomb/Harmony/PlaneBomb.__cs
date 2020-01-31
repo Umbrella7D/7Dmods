@@ -1,0 +1,53 @@
+using Harmony;
+using System.Reflection;
+using UnityEngine;
+using DMT;
+using System;
+using System.Collections.Generic;
+
+[HarmonyPatch(typeof(AIDirectorAirDropComponent))]
+[HarmonyPatch("SpawnSupplyCrate")] // public EntitySupplyCrate SpawnSupplyCrate(Vector3 spawnPos)
+public class PlaneBomb : IHarmony {
+    /// When the AirDrop creates its crate, a molotov is spawn at nearest player location
+    /// Problem : the molotov explodes while in the AirDrop
+    /// TODO: alter the path to drop bomb near player
+    /// TODO: elarge list AIDirectorAirDropComponent.crateTypes. NB: the dbg command only uses "sc_General"
+
+    public void Start() {
+        Debug.Log(" Loading Patch: " + GetType().ToString());
+        var harmony = HarmonyInstance.Create(GetType().ToString());
+        harmony.PatchAll(Assembly.GetExecutingAssembly());
+    }
+
+    static void Postfix(EntitySupplyCrate __result) { 
+        Debug.Log("PlaneBomb Postfix");
+        if (__result == null) return;
+        Vector3 pos = __result.GetPosition();
+        //pos.x = pos.x + AIAirDrop.controller.Random.RandomRange(-20f, 20f);
+        //pos.z = pos.z + AIAirDrop.controller.Random.RandomRange(-20f, 20f);
+        //pos.y = 253f;
+        SpawnItem(pos);
+   }
+
+   private static void SpawnItem(Vector3 position) {       
+        World world = GameManager.Instance.World;
+        EntityPlayer closest = world.GetClosestPlayer(position.x, position.y, position.z, 0, -1.0);
+        Vector3 where = closest.GetPosition();
+        Debug.Log(String.Format("Closest {0} {1}", closest, where));
+        //where.x = where.x + AIAirDrop.controller.Random.RandomRange(-20f, 20f);
+        //where.z = where.z + AIAirDrop.controller.Random.RandomRange(-20f, 20f);
+        //where.y = 253f;
+        where.y = where.y + 20;
+        ItemStack itemStack = new ItemStack(ItemClass.GetItem("thrownAmmoMolotovCocktail", false), 1); // this.CreateItemCount
+        world.gameManager.ItemDropServer(
+            itemStack,
+            where, // initial pos
+            Vector3.zero, /// rdm
+            new Vector3(0,-2,0), ///  _initialMotion
+            closest.entityId, // -1 plante (pour gagner XP ?)
+            1f,
+            false,
+            0);
+    }
+
+}

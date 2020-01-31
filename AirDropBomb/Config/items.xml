@@ -1,0 +1,47 @@
+<configs>
+  <append xpath="/items">
+    <item name="rockBomb">
+      <property name="Tags" value="ammo,weapon,attPerception,perkDemolitionsExpert"/>
+      <property name="ItemTypeIcon" value="explosion"/>
+      <property name="DisplayType" value="ammoGrenadeFire"/>
+      <property name="Class" value="ItemClassTimeBomb"/>
+      <property name="HoldType" value="54"/>
+      <property name="HoldType" value="0"/>
+      <property name="Meshfile" value="rock01"/>
+      <property name="DropScale" value="2.1"/>
+      <property name="Material" value="Mstone"/>
+      <property name="ThrowableDecoy" value="true"/>
+      <property name="Weight" value="0"/>
+      <property name="FuelValue" value="60"/>
+      <property name="Stacknumber" value="20"/>
+      <property name="LightValue" value=".35"/>
+      <property name="LightSource" value="lightSource"/>
+      <property name="ActivateObject" value="lightSource"/>
+      <property name="AlwaysActive" value="true"/>
+      <property name="Explosion.ParticleIndex" value="6"/>
+      <property name="Explosion.RadiusBlocks" value="1"/>
+      <property name="Explosion.RadiusEntities" value="1"/>
+      <property name="Explosion.BlastPower" value="35"/>
+      <property name="Explosion.DamageBonus.stone" value=".1"/>
+      <property name="Explosion.DamageBonus.metal" value="0"/>
+      <property name="Explosion.DamageBonus.earth" value="0"/>
+      <property name="Explosion.DamageBonus.water" value="0"/>
+      <property name="Explosion.DamageBonus.wood" value="6"/>
+      <property name="FuseTime" value="20000"/>
+      <property name="ExplodeOnHit" value="true"/>
+      <property name="StickPercent" value=".5"/>
+      <property name="EconomicValue" value="41"/>
+      <property name="Group" value="Ammo/Weapons"/>
+      <!-- <property class="Action0">
+        <property name="Class" value="ThrowAway"/>
+        <property name="Delay" value="1.2"/>
+        <property name="Explosion.ParticleIndex" value="7"/>
+        <property name="Throw_strength_default" value="20"/>
+        <property name="Throw_strength_max" value="50"/>
+        <property name="Max_strain_time" value="1.25"/>
+        <property name="Sound_start" value="swoosh"/>
+        <requirement name="CVarCompare" cvar="_underwater" operation="LT" value=".98"/>
+      </property> -->
+    </item>
+  </append>
+</configs>

@@ -1,0 +1,3 @@
+﻿<configs>
+<set xpath="/entity_classes/entity_class[@name='sc_General']/property[@name='Class']/@value">EntitySupplyCrateBomb, Mods</set>
+</configs>
