@@ -12,7 +12,7 @@ The AirDrop crate explodes on impact. It still contains loot.
 
 ## Todo / Fixme
 - Check damages
-
+- NB: Only tested through game command in a single player game.
 
 ## Future
 - Example in /Harmony to trigger a molotov above player location when the crate is spawned (currently the molotov explodes before contact !)
