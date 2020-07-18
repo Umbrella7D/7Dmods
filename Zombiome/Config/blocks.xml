@@ -148,7 +148,7 @@
 
 <!-- <property name="Collide" value="movement,melee,bullet,arrow,rocket"/> -->
 
-  <block name="airFullSmoke">
+  <!-- <block name="airFullSmoke">
     <property name="Class" value="Particle"/>
     <property name="Material" value="MairFull"/>
     <property name="Shape" value="Invisible"/>
@@ -156,11 +156,10 @@
     <property name="FilterTags" value="fterrain"/>
     <property name="ParticleName" value="smoke"/>
     <property name="ParticleOffset" value="0,0,0"/>
-    <!-- <property name="BuffsWhenWalkedOn" value="buffBurningEnvironment"/> -->
+  </block> -->
+<!-- <property name="BuffsWhenWalkedOn" value="buffBurningEnvironment"/> -->
     <!-- <property name="ActiveRadiusEffects" value="buffCampfireAOE(3)"/> -->
     <!-- <property name="Collide" value="melee,bullet,arrow,rocket"/> -->
-  </block>
-
 
 
 <block name="snowStalagmite">
