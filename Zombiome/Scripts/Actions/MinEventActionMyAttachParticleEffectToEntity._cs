@@ -1,0 +1,125 @@
+﻿using System;
+using System.Xml;
+using UnityEngine;
+
+// Token: 0x0200052F RID: 1327
+public class MinEventActionMyAttachParticleEffectToEntity : MinEventActionTargetedBase {
+	private static int verbose = 0;
+
+	// Token: 0x060028A6 RID: 10406 RVA: 0x0011652C File Offset: 0x0011472C
+	public override void Execute(MinEventParams _params) {
+		if (true) {
+			base.Execute(_params);
+			return;
+		}
+
+		if (verbose>0) Printer.Print("MyAttachParticleEffectToEntity: Start");
+		if (_params.Self == null) return;
+		Transform transform = _params.Transform;
+		if (verbose>1) Printer.Print("MyAttachParticleEffectToEntity: Start2");
+		if (!_params.Tags.Test_AnySet(this.usePassedInTransformTag)) {
+			if (verbose>1) Printer.Print("MyAttachParticleEffectToEntity: usePassedInTransformTag");
+			transform = _params.Self.transform;
+			if (this.parent_transform_path != null) {
+				if (verbose>1) Printer.Print("MyAttachParticleEffectToEntity: FindDeepChild");
+				transform = GameUtils.FindDeepChild(transform, this.parent_transform_path, true);
+			}
+		} else {
+			if (verbose>1) Printer.Print("MyAttachParticleEffectToEntity: use Base Transform");
+		}
+		if (transform == null) return;
+		string text = string.Format("tempParticle_" + this.goToInstantiate.name, Array.Empty<object>());
+		Transform transform2 = transform.Find(text);
+		if (transform2 == null) {
+			if (verbose>1) Printer.Print("MyAttachParticleEffectToEntity: instatiated");
+			GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(this.goToInstantiate);
+			if (gameObject == null) return;
+			if (verbose>1) Printer.Print("MyAttachParticleEffectToEntity: go not null");
+			transform2 = gameObject.transform;
+			gameObject.name = text;
+			Utils.SetLayerRecursively(gameObject, transform.gameObject.layer);
+			if (verbose>1) Printer.Print("MyAttachParticleEffectToEntity: rec set");
+			transform2.parent = transform;
+			transform2.localPosition = this.local_offset;
+			transform2.localRotation = Quaternion.Euler(this.local_rotation.x, this.local_rotation.y, this.local_rotation.z);
+			if (verbose>1) Printer.Print("MyAttachParticleEffectToEntity: return - no sound");
+			return; // No Audio
+			AudioPlayer component = transform2.GetComponent<AudioPlayer>();
+			if (verbose>1) Printer.Print("MyAttachParticleEffectToEntity: Audio comp");
+			if (component != null) component.duration = 100000f;
+			ParticleSystem[] componentsInChildren = transform2.GetComponentsInChildren<ParticleSystem>();
+			if (componentsInChildren != null)
+			{
+				return;
+				if (verbose>1) Printer.Print("MyAttachParticleEffectToEntity: componentsInChildren");
+				for (int i = 0; i < componentsInChildren.Length; i++)
+				{
+					if (verbose>1) Printer.Print("MyAttachParticleEffectToEntity: children", i, componentsInChildren.Length);
+					componentsInChildren[i].Stop();
+					// componentsInChildren[i].main.duration = 100000f;
+					// Cannot modify the return value of 'UnityEngine.ParticleSystem.main' because it is not a variable
+					// Pourtant c'est dans le code de base ...
+					// componentsInChildren[i].duration = 100000f; // read only !
+					// componentsInChildren[i].main.duration = 100000f;
+					componentsInChildren[i].Play();
+				}
+			}
+			if (verbose>0) Printer.Print("MyAttachParticleEffectToEntity: DONE");
+		}
+	}
+
+	// Token: 0x060028A7 RID: 10407 RVA: 0x001166A0 File Offset: 0x001148A0
+	public override bool CanExecute(MinEventTypes _eventType, MinEventParams _params)
+	{
+		return base.CanExecute(_eventType, _params) && _params.Self != null && this.goToInstantiate != null;
+	}
+
+	// Token: 0x060028A8 RID: 10408 RVA: 0x001166C8 File Offset: 0x001148C8
+	public override bool ParseXmlAttribute(XmlAttribute _attribute)
+	{
+		bool flag = base.ParseXmlAttribute(_attribute);
+		if (!flag)
+		{
+			string name = _attribute.Name;
+			if (name == "particle")
+			{
+				this.goToInstantiate = DataLoader.LoadAsset<GameObject>((_attribute.Value.IndexOf('#') < 0) ? ("ParticleEffects/" + _attribute.Value) : _attribute.Value);
+				return true;
+			}
+			if (name == "parent_transform")
+			{
+				this.parent_transform_path = _attribute.Value;
+				return true;
+			}
+			if (name == "local_offset")
+			{
+				this.local_offset = StringParsers.ParseVector3(_attribute.Value, 0, -1);
+				return true;
+			}
+			if (name == "local_rotation")
+			{
+				this.local_rotation = StringParsers.ParseVector3(_attribute.Value, 0, -1);
+				return true;
+			}
+		}
+		return flag;
+	}
+
+	// Token: 0x040020F0 RID: 8432
+	private GameObject goToInstantiate;
+
+	// Token: 0x040020F1 RID: 8433
+	private string prefab;
+
+	// Token: 0x040020F2 RID: 8434
+	private string parent_transform_path;
+
+	// Token: 0x040020F3 RID: 8435
+	private Vector3 local_offset = new Vector3(0f, 0f, 0f);
+
+	// Token: 0x040020F4 RID: 8436
+	private Vector3 local_rotation = new Vector3(0f, 0f, 0f);
+
+	// Token: 0x040020F5 RID: 8437
+	private FastTags usePassedInTransformTag = FastTags.Parse("usePassedInTransform");
+}
