@@ -1,6 +1,6 @@
 Zombiome is a mod for 7DTD
 
-** Zombiome **
+**Zombiome**
 Zombiome - it is not dead ! 
 
  Behold survivors !
@@ -12,7 +12,7 @@ Apocalypse is upon use ... let's hope it is fun
 
 A big thank to the forums' community - to all of you that help, answer questions and provide great tutorials !
 
-Mod Features:
+**Mod Features**
 The world has permanent random activity, structured by biomes and geographic areas. Most are
 apocalyptic natural disasters. A few of them are more "supernatural".
 
@@ -33,7 +33,7 @@ If you don't like what is happening around you, move and change area ! You'll fi
 
 Some activites may be even be used to your advantage. Observe your surroundings, explore, adapt or uninstal !
 
-** Current status **
+**Current status**
 
 experimental - I need feedback
 SP: playable
@@ -53,8 +53,8 @@ there are 2 things you can do for your most precious safes:
 Emergency manual: In case of error / crash, feel free to share the log file
 .../Mods/zb_err.txt. Please add these info: worldseed, worldsize, MP/SP, short description
 
-** Quick Code Guide **
-under construction
+**Quick Code Guide**
+*under construction*
 
 1) Activity start
 - buffZombiomeManager starts local coroutines
@@ -67,7 +67,7 @@ under construction
 3) Effects implementation
 
 
-** Commands **
+**Commands**
 
 zb pause : pause ZB activity (already running effects still need to finish)
 zb start : restart ZB activity (or start if automatic start failed)
@@ -75,8 +75,7 @@ zb start X : select the activity to run
 zb nz 1 / zb nz 4 : Activity uses 1 or 4 (default) adjacent areas. 1 useful for testings
 zb f : togle random activity time period (Vs. always active)
 
-** Known issues, todo list **
-
+**Known issues, todo list**
 
 DEV
 - Check if nitrogen creates more biome names
