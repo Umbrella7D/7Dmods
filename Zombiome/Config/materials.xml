@@ -1,0 +1,74 @@
+﻿<configs>
+<append xpath="/materials">
+
+
+  <material id="Mneige">
+    <property name="damage_category" value="earth"/>
+    <property name="surface_category" value="earth"/>
+    <property name="particle_category" value="snow"/>
+    <property name="particle_destroy_category" value="snow"/>
+    <property name="Hardness" type="float" value="1"/>
+    <property name="stepsound" value="snow"/>
+    <property name="fertile_level" value="1"/>
+    <property name="stability_glue" value="15"/>
+    <property name="Mass" type="int" value="5"/>
+    <property name="MaxDamage" value="50"/>
+    <property name="Experience" value="2"/>
+  </material>
+
+  <material id="MairFull">
+    <property name="collidable" value="true"/>
+    <property name="lightopacity" value="0"/>
+    <!-- <property name="Hardness" type="float" value="1"/> -->
+    <property name="stability_glue" value="100"/>
+    <property name="Mass" type="int" value="1"/>
+    <property name="StabilitySupport" value="true"/>
+  </material>
+  <!-- Hardness : can place a new block instead -->
+
+<!-- non liquid gives cubic shape, and gravity, even wo neighboor change
+neighboor can "move" the block
+
+perds le buff mouillé et breath
+<requirement name="CVarCompare" cvar="_underwater" operation="Equals" value="1"/>
+-> set the cvar ?
+
+liquid will prevent OnNeighborBlockChange() calls ?
+ -->
+
+<material id="MwaterWH">
+	<property name="damage_category" value="water"/>
+	<property name="surface_category" value="water"/>
+	<property name="liquid" value="true"/>
+	<property name="collidable" value="false"/>
+	<property name="stepsound" value="water"/>
+	<property name="lightopacity" value="3"/>
+	<property name="stability_glue" value="0"/>
+	<property name="movement_factor" value="0.6"/>
+	<property name="Mass" type="int" value="2"/>
+  <property name="MaxDamage" value="10000"/>
+</material>
+
+<!--
+  damage_category is for dmg multiplier
+ surface_category for sounds and particles
+-->
+
+
+<!-- Not liquid, (mass, max damage, collidable, higher lightopacity,, lower movement_factor) -->
+<material id="MwaterSlime">
+	<property name="damage_category" value="water"/>
+	<property name="surface_category" value="water"/>
+	<property name="collidable" value="true"/>
+	<property name="stepsound" value="water"/>
+	<property name="lightopacity" value="100"/>
+	<property name="stability_glue" value="0"/>
+	<property name="movement_factor" value="0.3"/>
+	<property name="Mass" type="int" value="2"/>
+  <property name="MaxDamage" value="500"/>
+	<property name="Experience" value="0"/>
+</material>
+
+
+</append>
+</configs>

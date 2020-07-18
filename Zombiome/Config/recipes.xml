@@ -1,0 +1,29 @@
+﻿<configs>
+<append xpath="/recipes">
+
+<!-- tags="learnable,workbenchCrafting" -->
+<!-- <recipe name="carBattery" count="1" craft_area="chemistryStation" tags="learnable,perkYeahScience,chemStationCrafting"> -->
+<recipe name="waterSlime" count="1" craft_time="20" craft_area="chemistryStation">
+	<ingredient name="resourceSnowBall" count="5"/>
+	<ingredient name="medicalBloodBag" count="1"/>
+	<ingredient name="resourceScrapPolymers" count="1"/>
+  <ingredient name="resourceGlue" count="1"/>
+</recipe>
+
+<recipe name="snowStalagmite" count="1" craft_time="20" craft_area="workbench">
+	<ingredient name="resourceSnowBall" count="100"/>
+	<ingredient name="drinkJarRiverWater" count="1"/>
+  <ingredient name="resourcePotassiumNitratePowder" count="10"/>
+  <ingredient name="foodCropBlueberries" count="2"/>
+</recipe>
+
+
+<!-- SmallPotion -->
+<!-- cactus -->
+<!-- mega support building - already exists -->
+<!-- projectiles / as mod for weap ? + lifetime ? -->
+
+<!-- balance with chaman level ? -->
+
+</append>
+</configs>

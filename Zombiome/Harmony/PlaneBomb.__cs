@@ -1,0 +1,54 @@
+using Harmony;
+using System.Reflection;
+using UnityEngine;
+using DMT;
+using System;
+using System.Collections.Generic;
+
+[HarmonyPatch(typeof(AIDirectorAirDropComponent))]
+[HarmonyPatch("SpawnSupplyCrate")] // public EntitySupplyCrate SpawnSupplyCrate(Vector3 spawnPos)
+public class PlaneBomb : IHarmony {
+    /// Trees fall toward player or in a random direction, depending on perkMiner69r (TODO: and agility)
+    // private static GameRandom gameRandom = GameManager.Instance.World.GetGameRandom(); // too early
+
+    public void Start() {
+        Debug.Log(" Loading Patch: " + GetType().ToString());
+        var harmony = HarmonyInstance.Create(GetType().ToString());
+        harmony.PatchAll(Assembly.GetExecutingAssembly());
+    }
+
+    static void Postfix(EntitySupplyCrate __result) { 
+        Debug.Log("PlaneBomb Postfix");
+        if (__result == null) return;
+
+        Vector3 pos = __result.GetPosition();
+        Debug.Log(String.Format("EntitySupplyCrate {0} {1}", __result, pos));
+        //pos.x = pos.x + AIAirDrop.controller.Random.RandomRange(-20f, 20f);
+        //pos.z = pos.z + AIAirDrop.controller.Random.RandomRange(-20f, 20f);
+        //pos.y = 253f;
+        SpawnItem(pos);
+   }
+   // GameManager.Instance.SpawnParticleEffectClient(new ParticleEffect("supply_crate_impact", base.GetPosition(), Quaternion.identity, lightBrightness, Color.white), this.entityId);
+		}
+   private static void SpawnItem(Vector3 position) {
+        World world = GameManager.Instance.World;
+        EntityPlayer closest = world.GetClosestPlayer(position.x, position.y, position.z, 0, -1.0);
+        Vector3 where = closest.GetPosition();
+        Debug.Log(String.Format("Closest {0} {1}", closest, where));
+        //where.x = where.x + AIAirDrop.controller.Random.RandomRange(-20f, 20f);
+        //where.z = where.z + AIAirDrop.controller.Random.RandomRange(-20f, 20f);
+        //where.y = 253f;
+        where.y = where.y + 20;
+        ItemStack itemStack = new ItemStack(ItemClass.GetItem("thrownAmmoMolotovCocktail", false), 1); // this.CreateItemCount
+        world.gameManager.ItemDropServer(
+            itemStack,
+            where, // initial pos
+            Vector3.zero, /// rdm
+            new Vector3(0,-2,0), ///  _initialMotion
+            closest.entityId, // -1 plante (pour gagner XP ?)
+            1f,
+            false,
+            0);
+    }
+
+}
