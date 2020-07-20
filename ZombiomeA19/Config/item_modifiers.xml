@@ -1,0 +1,58 @@
+﻿<configs>
+<append xpath="/item_modifiers">
+
+
+<!-- TODO: when using / hitting , send message to Zombiome to let the biome
+locate at impact ???
+
+mods only active when ZB is ?
+
+tiny potion
+tiny attacked other
+gen slime
+-->
+
+
+
+<!-- modifier_tags="crippling"  -->
+
+<!-- <property name="Mesh" value="models"/>
+	<property name="Model" value="Traps/trap_wood_spikes_dmg0" param1="main_mesh"/> -->
+
+	<item_modifier name="modRangeFreezing" installable_tags="ranged" type="attachment">
+		<!-- <property name="UnlockedBy" value="modGunCrippleEmSchematic"/> -->
+		<property name="Stacknumber" value="1"/> <property name="Group" value="Mods"/>
+		<!-- <property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab"/> -->
+    <!-- <property name="DropMeshfile" value="Traps/trap_wood_spikes_dmg0"/> -->
+    <property name="DropMeshfile" value="models"/>
+    <property name="DropMeshfile" value="Traps/trap_wood_spikes_dmg0"/>
+    <!-- <property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab"/> -->
+    <!-- <property name="Mesh" value="models"/> -->
+    <!-- <property name="Model" value="Traps/trap_wood_spikes_dmg0" param1="main_mesh"/> -->
+
+		<!--Each shot has a chance to cripple-->
+		<effect_group tiered="false">
+    <!-- <triggered_effect trigger="onProjectileImpact" action="ImpactFragment, Mods" target="self" item="ZBProj_treeShrub" rep="1" dt="1000"/> -->
+				<triggered_effect trigger="onProjectileImpact" action="ImpactFragment, Mods" target="self" item="ZBProj_freeze" at_entity="true" rep="1" dt="500"/>
+        	<triggered_effect trigger="onSelfDamagedOther" action="ImpactFragment, Mods" target="other" item="ZBProj_freeze" at_entity="true" rep="1" dt="500"/>
+          <!-- <triggered_effect trigger="onSelfDamagedOther" action="ImpactFragment, Mods" target="self" item="ZBProj_freeze" at_entity="true" rep="1" dt="500"/> -->
+		</effect_group>
+	</item_modifier>
+
+	<item_modifier name="modRangeEjector" installable_tags="ranged" type="attachment">	
+		<property name="Stacknumber" value="1"/> <property name="Group" value="Mods"/>
+    <!-- <property name="CustomIcon" value="modGunCrippleEm"/> -->
+    <property name="CustomIcon" value="modGunTriggerGroupBurst"/>	
+    <!-- <property name="DropMeshfile" value="Traps/trap_wood_spikes_dmg0"/> -->
+    <!-- <property name="DropMeshfile" value="#Other/Items?Misc/sack_droppedPrefab.prefab"/> -->
+    <!-- <property name="Mesh" value="models"/> -->
+    <!-- <property name="Model" value="Traps/trap_wood_spikes_dmg0" param1="main_mesh"/> -->
+		<effect_group tiered="false">
+          <!-- buffEjected would be another impl (one more useful layer) -->
+        	<triggered_effect trigger="onSelfDamagedOther" action="Eject, Mods" target="other"
+          checkothers="false" strength="1.0" dirrandom="0.7" dsi="2,1.5,1"/>
+          <!-- <triggered_effect trigger="onSelfDamagedOther" action="ImpactFragment, Mods" target="self" item="ZBProj_freeze" at_entity="true" rep="1" dt="500"/> -->
+		</effect_group>
+	</item_modifier>
+</append>
+</configs>

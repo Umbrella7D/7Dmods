@@ -1,0 +1,81 @@
+using System.Xml;
+using UnityEngine;
+
+public class MinEventActionSkillBuff : MinEventActionRemoveBuff {
+    int mySkillPoint = 10;
+    //  <triggered_effect trigger="onSelfBuffStart" action="SkillBuff, Mods" target="self" value="2" /> // two Skill points
+    public override void Execute(MinEventParams _params)
+    {
+        Debug.Log(" MinEventActionSkillBuff Execute _params: " + _params.ToString());
+        for (int i = 0; i < this.targets.Count; i++)
+        {
+            Debug.Log(" MinEventActionSkillBuff Execute Target: " + this.targets[i].ToString());
+            EntityPlayer player = this.targets[i] as EntityPlayer;
+
+            if (player != null) {
+                Debug.Log(" MinEventActionSkillBuff Execute Player: " + player.ToString());
+                Debug.Log("                         Execute Player: " + player.inventory);
+                if (player.inventory.holdingItem.Name != null) {
+                    Debug.Log("                         Execute Player: " + player.inventory.holdingItem.Name.ToString());
+                    Debug.Log("                         Execute Player: " + player.inventory.holdingItemData.actionData[0]);
+                    /*
+                    Inventory
+                    HookScriptAOE2
+                    ItemActionEat + MyInventoryData 
+                    */
+                }
+                player.Progression.SkillPoints += this.mySkillPoint;
+                if(!player.Buffs.HasBuff("buffShocked"))
+                    player.Buffs.AddBuff("buffShocked");
+            }
+
+            EntityZombie entity = this.targets[i] as EntityZombie;
+             if (entity != null) {
+                Debug.Log(" MinEventActionSkillBuff Execute EntityZombie: " + entity.ToString());
+                if(!entity.Buffs.HasBuff("buffShocked"))
+                     entity.Buffs.AddBuff("buffShocked");
+            }
+
+
+        }
+    }
+
+/* 
+        World world = GameManager.Instance.World;
+        List<Entity> entitiesInBounds = GameManager.Instance.World.GetEntitiesInBounds(null, new Bounds(position, Vector3.one * Radius));
+        if(entitiesInBounds.Count > 0)
+        {
+            for(int i = 0; i < entitiesInBounds.Count; i++)
+            {
+                EntityAlive entity = entitiesInBounds[i] as EntityAlive;
+                if(entity != null)
+                {
+                    if(!entity.Buffs.HasBuff(strBuff))
+                        entity.Buffs.AddBuff(strBuff);
+                }
+            }
+        } */
+
+
+
+/* 
+    public override bool ParseXmlAttribute(XmlAttribute _attribute)
+    {
+        bool flag = base.ParseXmlAttribute(_attribute);
+        if (!flag)
+        {
+            string name = _attribute.Name;
+            if (name != null)
+            {
+                if (name == "value" )
+                {
+
+                    float.TryParse(_attribute.Value, out this.floatSpeed);
+
+                    return true;
+                }
+            }
+        }
+        return flag;
+    } */
+}

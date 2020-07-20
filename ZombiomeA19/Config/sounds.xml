@@ -1,0 +1,35 @@
+﻿<configs>
+
+<!-- Remove broken glass sound from all molotov (because of fire effects, eg firestorms)
+molotov_explode1 : air motion of bottle (woosh)
+molotov_explode2 : glass sound
+molotov_explode3 : explosion sound
+
+
+like wind : zombie_bbq, parachute
+-->
+<!-- <remove xpath="/Sounds/SoundDataNode[@name='molotov_explosion']/AudioClip[@ClipName='Sounds/Weapons/Thrown/Molotov/molotov_explode3']"/> -->
+<remove xpath="/Sounds/SoundDataNode[@name='molotov_explosion']/AudioClip[@ClipName='Sounds/Weapons/Thrown/Molotov/molotov_explode2']"/>
+<remove xpath="/Sounds/SoundDataNode[@name='molotov_explosion']/AudioClip[@ClipName='Sounds/Weapons/Thrown/Molotov/molotov_explode1']"/>
+
+<!-- <remove xpath="/xui/ruleset[@name='default']/window_group[@name='toolbelt']/window[@name='HUDLeftStatBars']" /> -->
+
+<append xpath="/Sounds">
+
+<!-- Raise DivideBy0 Error
+<SoundDataNode name="AttractZombies0">
+	<Noise ID="4" noise="60" time="2" muffled_when_crouched="1.65"/>
+	<LocalCrouchVolumeScale value="1"/> <CrouchNoiseScale value="1"/> <NoiseScale value="1"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/> </SoundDataNode> -->
+
+<SoundDataNode name="AttractZombies"> <AudioSource name="Sounds/AudioSource_Impact"/>
+	<Noise ID="4" noise="60" time="10" muffled_when_crouched="1.5"/>
+	<AudioClip ClipName="Sounds/ImpactSurface/organichitcloth3"/>	
+  <LowestPitch name="0.9"/>
+  <HighestPitch name="1.0"/>
+	<LocalCrouchVolumeScale value="1.0"/> <CrouchNoiseScale value="1.0"/> <NoiseScale value="1"/> <MaxVoices value="3"/> <MaxRepeatRate value="0.01"/> </SoundDataNode>
+
+
+
+</append>
+
+</configs>

@@ -1,0 +1,929 @@
+﻿<configs>
+
+
+<!-- tooltip is on screen, desc is in caracter tab list. hidden="true" is nowhere visible ... -->
+
+<append xpath="/buffs">
+
+	<buff name="ZombiomeManager" description_key="buffZBManagerDesc" tooltip_key="buffZBManagerDesc"
+				name_key="buffZBManagerName" icon_color="0,255,0"
+				remove_on_death="false">
+		<stack_type value="ignore"/>		
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="ZBManager, Mods" arg="start"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="ZBManager, Mods" arg="enter"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="ZBManager, Mods" arg="stop"/>
+			<triggered_effect trigger="onSelfLeaveGame" action="ZBManager, Mods" arg="stop"/>
+			<triggered_effect trigger="onSelfLeaveGame" action="RemoveBuff" buff="ZombiomeManager"/>
+
+			<triggered_effect trigger="onSelfBuffStart" action="ZBManagerOption, Mods"
+					autostart="true" log="0" nz4="true" buffUnicization="false"
+					frequency="5" swallow="false"/>
+		</effect_group>
+	</buff>
+
+	<buff name="nosack"></buff>
+
+	<!-- ================================================
+		Biome malus
+	===================================================== -->
+
+	<buff name="buffZBFrozen" remove_on_death="true"
+		name_key="buffZBFrozenName" description_key="buffZBFrozenDesc" tooltip_key="buffZBFrozenDesc"
+		icon="ui_game_symbol_cold" icon_color="0,0,125" icon_blink="true">
+		<damage_type value="cold"/>
+		<stack_type value="replace"/>
+		<duration value="20"/>
+		<update_rate value="3.0"/>
+		<effect_group>
+			<passive_effect name="RunSpeed" operation="perc_set" value="0.3"/>
+			<passive_effect name="WalkSpeed" operation="perc_set" value="0.3"/>
+			<passive_effect name="CrouchSpeed" operation="perc_set" value="0.3"/>
+			<passive_effect name="JumpStrength" operation="perc_set" value="0.3"/>
+			<passive_effect name="StaminaChangeOT" operation="base_subtract" value="100"/>
+			<triggered_effect trigger="onSelfBuffStart" action="ModifyScreenEffect" effect_name="Cold" intensity="1" fade=".5"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="ModifyScreenEffect" effect_name="Cold" intensity="0" fade=".5"/>
+		</effect_group>
+
+		<!-- buffBurningElement : torch, burning zombie -->
+		<effect_group name="warm">
+			<requirements compare_type="or">
+				<requirement name="HasBuff" buff="buffCampfireAOEEffect"/>
+				<requirement name="HasBuff" buff="buffBurningFlamingArrow"/>
+				<requirement name="HasBuff" buff="buffBurningMolotov"/>
+				<requirement name="HasBuff" buff="buffBurningEnvironmentHack"/>
+				<requirement name="HasBuff" buff="buffBurningEnvironment"/>
+				<requirement name="HasBuff" buff="buffBurningElement"/>
+				<requirement name="HasBuff" buff="buffFired0"/>
+				<requirement name="HoldingItemHasTags" tags="heldTorch"/>
+			</requirements>
+			<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffZBFrozen">
+			</triggered_effect>
+		</effect_group>
+	</buff>
+	
+	<!-- NB: StaminaChangeOT.base_subtract fails with duration, but ok when none (inherits the buff duration) -->
+	<buff name="buffZBPoison" remove_on_death="true"
+		name_key="buffZBPoisonName" description_key="buffZBPoisonDesc" tooltip_key="buffZBPoisonDesc"
+		icon="ui_game_symbol_water" icon_color="50,200,50" icon_blink="true">
+		<damage_type value="Suffocation"/>
+		<stack_type value="replace"/>
+		<duration value="30"/>
+		<update_rate value="3.0"/>
+		<effect_group>
+			<passive_effect name="HealthChangeOT" operation="base_subtract" value="2"/>	
+			<triggered_effect trigger="onSelfBuffUpdate" action="ModifyScreenEffectRdm, Mods" effect_name="Distortion" intensity="2" fade=".5" rate0 ="0.5"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="ModifyScreenEffect" effect_name="Distortion" intensity="0" fade=".5"/>
+		</effect_group>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" buff="buffRagdoll" tags="running">
+				<requirement name="RandomRoll" seed_type="Random" min_max="0,100" operation="LTE" value="20"/>
+			</triggered_effect>
+		</effect_group>
+	</buff>
+
+	<!-- TODO: remove when wet
+	Here => check wet OnUpdate
+	On wet => check OnStart : more efficient -->
+	<buff name="buffZBBlinded" remove_on_death="true"
+		name_key="buffZBBlindedName" description_key="buffZBBlindedDesc" tooltip_key="buffZBBlindedDesc"
+		icon="ui_game_symbol_stealth" icon_color="250,110,10" icon_blink="true">
+		<damage_type value="Suffocation"/>
+		<stack_type value="replace"/>
+		<duration value="20"/>
+		<update_rate value="3.0"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="ModifyScreenEffect" effect_name="Blur" intensity="2" fade=".5"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="ModifyScreenEffect" effect_name="Blur" intensity="0" fade=".5"/>
+		</effect_group>
+		<effect_group name="water">
+			<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffZBBlinded">
+				<requirement name="HasBuff" buff="buffElementWet"/>
+			</triggered_effect>
+		</effect_group>
+	</buff>
+
+	<buff name="buffZBLighten" remove_on_death="true"
+		name_key="buffZBLightenName" description_key="buffZBLightenDesc"
+		icon="ui_game_symbol_stealth" icon_color="200,50,50" icon_blink="true">	
+		<stack_type value="ignore"/><duration value="60"/><update_rate value="11.0"/>
+		<effect_group name="particles">
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_candleWall_flame"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="AttachParticleEffectToEntity" particle="p_candleWall_flame"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_candleWall_flame"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_candleWall_flame"/>
+		</effect_group>
+		<effect_group name="attract">
+			<triggered_effect trigger="onSelfBuffUpdate" action="PlaySound" target="self" sound="AttractZombies"/>
+		</effect_group>
+	</buff>
+
+
+	<!-- ================================================
+		Graphism
+	===================================================== -->
+
+	<buff name="buffZBPartSnowStorm" remove_on_death="true">
+		<effect_group name="particle">
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_snowstorm1" local_offset="0,-.2,0"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="AttachParticleEffectToEntity" particle="p_snowstorm1" local_offset="0,-.2,0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_snowstorm1"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_snowstorm1"/>
+		</effect_group>
+	</buff>
+	<buff name="buffZBPartSmokeStorm" remove_on_death="true">
+		<effect_group name="particle">
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_smokestorm" local_offset="0,-.2,0"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="AttachParticleEffectToEntity" particle="p_smokestorm" local_offset="0,-.2,0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_smokestorm"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_smokestorm"/>
+		</effect_group>
+	</buff>
+	<buff name="buffZBPartSandStorm" remove_on_death="true">
+		<effect_group name="particle">
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_sandstorm" local_offset="0,-.2,0"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="AttachParticleEffectToEntity" particle="p_sandstorm" local_offset="0,-.2,0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_sandstorm"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_sandstorm"/>
+		</effect_group>
+	</buff>
+	<buff name="buffZBPartSmokeColumn" remove_on_death="true">
+		<effect_group name="particle">
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_signal_flarePrefab" local_offset="0,-.2,0"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="AttachParticleEffectToEntity" particle="p_signal_flarePrefab" local_offset="0,-.2,0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_signal_flarePrefab"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_signal_flarePrefab"/>
+		</effect_group>
+	</buff>
+	<buff name="buffZBPartCandleLight" remove_on_death="true">
+		<effect_group name="particle">
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_candleWall_flame"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="AttachParticleEffectToEntity" particle="p_candleWall_flame"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_candleWall_flame"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_candleWall_flame"/>
+		</effect_group>
+	</buff>
+
+<!-- ================================================
+========	Ghost Behaviour
+
+TODO: use a cvar to control time ?? => compute time until end of phase!
+
+===================================================== -->
+	
+	<!-- Ghost Motion -->
+	<buff name="buffZBJumpStrong2" remove_on_death="true">
+		<update_rate value="4.0"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffUpdate" action="Eject, Mods" target="self" checkothers="false"
+					strength="1.0" dirrandom="0.7" dsi="4,1.5,1"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffZBJumpStrong" remove_on_death="true" hidden="true">
+		<update_rate value="2.0"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffUpdate" action="Eject, Mods" target="self" checkothers="false"
+					strength="1.0" dirrandom="0.7" dsi="2,1.5,1"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffZBGhostJumpWeak" remove_on_death="true">
+		<update_rate value="4.0"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffUpdate" action="Eject, Mods" target="self" checkothers="false"
+					strength="1.0" dirrandom="0.2" dsi="2,0.5,0"/>
+		</effect_group>
+	</buff>
+
+	<!-- Ghost Duration -->
+	<buff name="buffZBRespiteKeep" remove_on_death="true">
+		<stack_type value="duration"/><duration value="60"/>
+		<effect_group>
+		<triggered_effect trigger="onSelfBuffFinish" action="ExplodeEntity, Mods" target="self"/>
+	</effect_group></buff>
+
+	<buff name="buffZBRespite10" remove_on_death="true"><stack_type value="ignore"/><duration value="10"/><effect_group>
+		<!-- <triggered_effect trigger="onSelfBuffFinish" action="ModifyStats" stat="Health" operation="set" value="0"/> -->
+		<!-- Ok, but Kill with display message, unlike SetDead+manual -->
+		<triggered_effect trigger="onSelfBuffFinish" action="ExplodeEntity, Mods" target="self"/>
+	</effect_group></buff>
+	<buff name="buffZBRespite20" remove_on_death="true"><stack_type value="ignore"/><duration value="20"/><effect_group>
+		<triggered_effect trigger="onSelfBuffFinish" action="ExplodeEntity, Mods"/>
+	</effect_group></buff>
+	<buff name="buffZBRespite30" remove_on_death="true"><stack_type value="ignore"/><duration value="30"/><effect_group>
+		<triggered_effect trigger="onSelfBuffFinish" action="ExplodeEntity, Mods"/>
+	</effect_group></buff>
+	<buff name="buffZBRespite60" remove_on_death="true"><stack_type value="ignore"/><duration value="60"/><effect_group>
+		<triggered_effect trigger="onSelfBuffFinish" action="ExplodeEntity, Mods"/>
+	</effect_group></buff>
+
+	<!-- Ghost Explosion -->
+	<buff name="buffZBexplosif" remove_on_death="true">	
+		<stack_type value="ignore"/>
+		<update_rate value="1.0"/>
+		<effect_group>
+			<!-- <triggered_effect trigger="onSelfBuffUpdate" action="ContactKill, Mods" target="selfAOE" range="2"> -->
+			<triggered_effect trigger="onSelfBuffUpdate" action="ExplodeEntity, Mods" target="selfAOE" range="1.5">
+				<requirement name="!EntityTagCompare" target="other" tags="ghost"/>
+			</triggered_effect>
+	  	</effect_group>
+	</buff>
+
+	<buff name="buffZBExploseOnFall" remove_on_death="true"><stack_type value="ignore"/></buff>
+
+	<!-- ================================================
+		Triggers
+	===================================================== -->
+
+
+
+	<!-- ================================================
+		Elemental State, Esthetic, Infinite
+	buffZBRadiating, buffZBShoking, buffZbesRFireEst, buffZBFiring
+
+	I could separate esthetic and effect (keep trigger buffs simple), and set
+	2 buffs from ZB. But harder endbuff conditions ?
+
+	NB:
+	- Radiating causes "mesh warning".
+	- Particle size does not depend on entity size (test w small), so we don't need multiple ghost (except vultures or follow)
+	- Particle offset does ! but I could use the offset manually instead (but changing Z size does dynamically)
+	===================================================== -->
+	
+
+   	<buff name="buffZBShoking" remove_on_death="true">
+		<!-- <damage_type value="electrical"/> -->
+		<!-- <stack_type value="replace"/> -->
+		<!-- <duration value="30"/> -->
+		<effect_group name="esthetic">
+			<triggered_effect trigger="onSelfBuffStart" action="MyAttachParticleEffectToEntity, Mods" particle="p_electric_shock" local_offset="0,0.75,0"/>
+			<!-- <triggered_effect trigger="onSelfEnteredGame" action="MyAttachParticleEffectToEntity, Mods" particle="p_electric_shock" local_offset="0,0.75,0"/> -->
+
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_electric_shock"/>
+
+			<triggered_effect trigger="onSelfBuffFinish" action="RemoveParticleEffectFromEntity" particle="p_electric_shock"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_electric_shock"/>
+			<!-- <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="ETrapHit" operation="set" value="0"/> -->
+			<triggered_effect trigger="onSelfLeaveGame" action="RemoveParticleEffectFromEntity" particle="p_electric_shock"/>
+
+			<triggered_effect trigger="onSelfBuffStart" action="PlaySound" sound="electric_fence_impact"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="FadeOutSound" sound="electric_fence_impact"/>
+			<triggered_effect trigger="onSelfLeaveGame" action="StopSound" sound="electric_fence_impact"/>
+		</effect_group>
+
+		<effect_group name="aura">
+			<triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" target="selfAOE" range="2" buff="buffCharged0">
+				<requirement name="!EntityTagCompare" target="other" tags="ghost,vehicle,turret"/>
+				<!-- <requirement name="!EntityTagCompare" target="other" tags="ghost"/> -->	
+			</triggered_effect>
+		</effect_group>
+	</buff>
+
+	<buff name="buffZBFiring" remove_on_death="true">
+		<effect_group name="water"> 
+			<requirements compare_type="or"> <!-- extinguish any fire if wet or if buffExtinguishFire is executed parent_transform="LOD0" shape_mesh="true -->
+				<requirement name="RandomRoll" seed_type="Random" min_max="0,1" operation="LTE" value="@_wetness"/>
+				<requirement name="HasBuff" buff="buffExtinguishFire"/>
+			</requirements>
+		</effect_group>
+		<effect_group name="run particles, cleanup">  <!-- parent_transform="Hips" p_onFire p_burning_barrel -->
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_onFire" local_offset="0,-.2,0" parent_transform="LOD0" shape_mesh="false"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="AttachParticleEffectToEntity" particle="p_onFire" local_offset="0,-.2,0" parent_transform="LOD0" shape_mesh="false"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_onFire"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_onFire"/>
+			<triggered_effect trigger="onSelfBuffStart" action="AddJournalEntry" journal="onFireTip"/>
+		</effect_group>
+		<effect_group name="aura">
+			<triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" target="selfAOE" range="2" buff="buffBurningMolotov">
+				<requirement name="!EntityTagCompare" target="other" tags="ghost,vehicle,turret"/>
+			</triggered_effect>
+		</effect_group>
+	</buff>
+
+	
+
+	<buff name="buffRingOfFire_ZB" remove_on_death="true">
+		<stack_type value="replace"/>
+		<duration value="0"/>
+		<update_rate value=".7"/>
+		<display_value_key value="buffRingOfFireEffectNameShort"/><display_value value="xxx"/>
+		<effect_group name="esthetic">
+			<triggered_effect trigger="onSelfBuffStart" action="PlaySound" sound="FireMediumLoop" play_in_head="true"/>
+			<triggered_effect trigger="onSelfBuffStart" action="FadeOutSound" sound="FireMediumLoop" play_in_head="true"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="PlaySound" sound="forgeFire_die" play_in_head="true"/>
+		</effect_group>
+		<effect_group name="aura">
+			<triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" target="selfAOE" range="10" buff="buffRingOfFireEffect_ZB">
+				<requirement name="!EntityTagCompare" target="other" tags="ghost,vehicle,turret"/> <!-- buffIsOnFire -->
+			</triggered_effect>
+		</effect_group>
+	</buff>
+
+	<buff name="buffZBYellowFire" remove_on_death="true">
+		<stack_type value="duration"/><duration value="15"/>
+		<effect_group name="particles">
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_fire_small"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="AttachParticleEffectToEntity" particle="p_fire_small"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_fire_small"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_fire_small"/>
+		</effect_group>
+		<effect_group name="aura">
+			<triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" target="selfAOE" range="2" buff="buffBurningWeapon">
+				<requirement name="!EntityTagCompare" target="other" tags="ghost,vehicle,turret"/>
+			</triggered_effect>
+		</effect_group>
+	</buff>
+	<!--
+	NB: - burning plus comme un crépitement (feu jaune tres agite), ressemble à un bout de molotov
+	    - yellowfire comme une jolie flamme statique
+		- flamette comme une toute petite flamme/etincelle avec fumée
+	 -->
+	<buff name="buffZBBurning" remove_on_death="true">
+		<stack_type value="duration"/><duration value="15"/>
+		<effect_group name="particles">
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_burning_barrel" local_offset="0,-.5,0"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="AttachParticleEffectToEntity" particle="p_burning_barrel" local_offset="0,-.5,0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_burning_barrel"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_burning_barrel"/>
+		</effect_group>
+		<effect_group name="aura">
+			<triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" target="selfAOE" range="2" buff="buffBurningMolotov">
+				<requirement name="!EntityTagCompare" target="other" tags="ghost,vehicle,turret"/>
+			</triggered_effect>
+		</effect_group>
+	</buff>
+	<buff name="buffZBFlamette" remove_on_death="true">
+		<stack_type value="duration"/>
+		<duration value="60"/>
+		<effect_group name="particles">
+		 <!-- local_offset="0,-.2,0" -->
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_forge"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="AttachParticleEffectToEntity" particle="p_forge"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_forge"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_forge"/>
+		</effect_group>
+		<effect_group name="aura">
+			<triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" target="selfAOE" range="1" buff="buffBurningMolotov">
+				<requirement name="!EntityTagCompare" target="other" tags="ghost,vehicle,turret"/>
+			</triggered_effect>
+		</effect_group>
+	</buff>
+
+	<buff name="buffZBLighting" remove_on_death="true">
+		<stack_type value="duration"/><duration value="60"/><update_rate value="3.0"/>	
+		<effect_group name="aura">
+			<triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" target="selfAOE" range="4" buff="buffZBLighten">
+				<requirement name="!EntityTagCompare" target="other" tags="ghost,vehicle,turret"/>
+				<!-- <requirement name="!EntityTagCompare" target="other" tags="ghost"/> -->	
+			</triggered_effect>
+		</effect_group>
+	</buff>
+
+	<!-- ================================================
+		Elemental State, Triggering, Infinite
+	buffZbesRadiaTri, buffZbesShockTri, buffZbesRFireTri, buffZbesFireTri
+
+	- Tri are triggers
+	- Can I just override a block based on name ?
+	buffOnFireLight/2 have mesh warning
+	===================================================== -->
+
+	<buff name="buffOnFireLight"
+		name_key="buffRingOfFireName" description_key="buffRingOfFireEffectDesc" tooltip_key="buffRingOfFireEffectDesc"
+		icon="ui_game_symbolFire" icon_color="255,0,0" icon_blink="true">
+		<damage_type value="heat"/>
+		<stack_type value="replace"/>
+		<duration value="20"/>
+		<update_rate value="3.0"/>
+		<effect_group>
+			<passive_effect name="HealthChangeOT" operation="base_subtract" duration="3" value="2"/>
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_onFire" shape_mesh="false"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_onFire"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_onFire"/>
+			<triggered_effect trigger="onSelfBuffUpdate" action="ParticlesAtEntity, Mods" particle="smoke" color="0.8,0.8,0.8,0.8"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffOnFireLight2"
+		name_key="buffRingOfFireName" description_key="buffRingOfFireEffectDesc" tooltip_key="buffRingOfFireEffectDesc"
+		icon="ui_game_symbolFire" icon_color="255,0,0" icon_blink="true">
+		<damage_type value="heat"/>
+		<stack_type value="replace"/>
+		<duration value="20"/>
+		<update_rate value="3.0"/>
+		<effect_group>
+			<!-- local_offset.x = 2 <=> 2 hex on the right, following player rot - z>0 is forward -->
+			<passive_effect name="HealthChangeOT" operation="base_subtract" duration="3" value="2"/>
+			<!-- parent_transform="Hips" : this is right shoulder, can use local offset -->
+			<!-- <triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_forge" parent_transform="Head"/> -->
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_forge" local_offset="0,0.1,0.6"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_forge"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_forge"/>
+			<!-- <triggered_effect trigger="onSelfBuffUpdate" action="ParticlesAtEntity, Mods" particle="smoke" color="0.8,0.8,0.8,0.8"/> -->
+		</effect_group>
+	</buff>
+
+	<buff name="buffOnFireLight3"
+		name_key="buffRingOfFireName" description_key="buffRingOfFireEffectDesc" tooltip_key="buffRingOfFireEffectDesc"
+		icon="ui_game_symbolFire" icon_color="255,0,0" icon_blink="true">
+		<damage_type value="heat"/>
+		<stack_type value="replace"/>
+		<duration value="20"/>
+		<update_rate value="3.0"/>
+		<effect_group>
+			<passive_effect name="HealthChangeOT" operation="base_subtract" duration="3" value="2"/>
+			<!-- parent_transform="Hips" : this is right shoulder, can use local offset -->
+			<!-- <triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_forge" parent_transform="Head"/> -->
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_big_smoke" local_offset="0,0.1,0.6"/>
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_big_smoke" local_offset="0,0.6,0.4"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_big_smoke"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_big_smoke"/>
+			<!-- <triggered_effect trigger="onSelfBuffUpdate" action="ParticlesAtEntity, Mods" particle="smoke" color="0.8,0.8,0.8,0.8"/> -->
+		</effect_group>
+	</buff>
+
+	<buff name="buffRingOfFireEffect_ZB" name_key="buffRingOfFireName" description_key="buffRingOfFireEffectDesc" tooltip_key="buffRingOfFireEffectDesc"
+		icon="ui_game_symbolFire" icon_color="255,0,0" icon_blink="true">
+		<damage_type value="heat"/>
+		<stack_type value="ignore"/>
+		<duration value="5"/>
+		<update_rate value="1.2"/>
+		<effect_group>
+			<passive_effect name="HealthChangeOT" operation="base_subtract" duration="0,10" value="0,500"/>
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_onFire"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_onFire"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_onFire"/>
+		</effect_group>
+	</buff>
+
+
+
+	<buff name="buffFired0"
+			name_key="buffIsOnFireName" description_key="buffIsOnFireDesc" tooltip_key="buffIsOnFireTooltip"
+			icon="ui_game_symbolFire" icon_color="255,0,0" icon_blink="true" remove_on_death="true">
+		<damage_type value="Heat"/>
+		<stack_type value="ignore"/>
+		<duration value="10"/>
+		<!-- <duration value="0"/> -->
+		<update_rate value="1"/>
+		<display_value value=".buffIsOnFireDisplay"/><display_value_format value="time"/>
+		<!-- bookkeeping for all burning buffs -->
+
+		<effect_group name="extinguished"> <!-- extinguish any fire if wet or if buffExtinguishFire is executed -->
+			<requirements compare_type="or">
+				<requirement name="RandomRoll" seed_type="Random" min_max="0,1" operation="LTE" value="@_wetness"/>
+				<requirement name="HasBuff" buff="buffExtinguishFire"/>
+			</requirements>
+			<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffBurningFlamingArrow"/>
+			<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffBurningMolotov"/>
+			<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffBurningEnvironmentHack"/>
+			<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffBurningEnvironment"/>
+			<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffBurningElement"/>
+			<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffFired0"/>
+		</effect_group>
+
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar=".buffIsOnFireDisplay" operation="set" value="@$buffBurningFlamingArrowDuration"/>
+			<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar=".buffIsOnFireDisplay" operation="set" value="@buffBurningMolotovDuration">
+				<requirement name="CVarCompare" cvar="buffBurningMolotovDuration" operation="GT" value="@.buffIsOnFireDisplay"/></triggered_effect>
+			<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar=".buffIsOnFireDisplay" operation="set" value="@$BurningEnvironmentDuration">
+				<requirement name="CVarCompare" cvar="$BurningEnvironmentDuration" operation="GT" value="@.buffIsOnFireDisplay"/></triggered_effect>
+			<triggered_effect trigger="onSelfBuffStart" action="ModifyCVar" cvar=".buffIsOnFireDisplay" operation="set" value="@$buffBurningElementDuration">
+				<requirement name="CVarCompare" cvar="$buffBurningElementDuration" operation="GT" value="@.buffIsOnFireDisplay"/></triggered_effect>
+
+			<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar=".buffIsOnFireDisplay" operation="set" value="@$buffBurningFlamingArrowDuration"/>
+			<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar=".buffIsOnFireDisplay" operation="set" value="@buffBurningMolotovDuration">
+				<requirement name="CVarCompare" cvar="buffBurningMolotovDuration" operation="GT" value="@.buffIsOnFireDisplay"/></triggered_effect>
+			<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar=".buffIsOnFireDisplay" operation="set" value="@$BurningEnvironmentDuration">
+				<requirement name="CVarCompare" cvar="$BurningEnvironmentDuration" operation="GT" value="@.buffIsOnFireDisplay"/></triggered_effect>
+			<triggered_effect trigger="onSelfBuffUpdate" action="ModifyCVar" cvar=".buffIsOnFireDisplay" operation="set" value="@$buffBurningElementDuration">
+				<requirement name="CVarCompare" cvar="$buffBurningElementDuration" operation="GT" value="@.buffIsOnFireDisplay"/></triggered_effect>
+		</effect_group>
+
+		<effect_group> <!-- terminate only if all burn buffs are gone -->
+			<requirements>
+				<requirement name="NotHasBuff" buff="buffBurningFlamingArrow"/>
+				<requirement name="NotHasBuff" buff="buffBurningMolotov"/>
+				<requirement name="NotHasBuff" buff="buffBurningEnvironmentHack"/>
+				<requirement name="NotHasBuff" buff="buffBurningEnvironment"/>
+				<requirement name="NotHasBuff" buff="buffBurningElement"/> <!-- torch, burning zombie -->
+				<requirement name="NotHasBuff" buff="buffFired0"/> 
+			</requirements>
+				<triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffIsOnFire"/>
+		</effect_group>
+
+		<effect_group name="effect">
+			<passive_effect name="HealthChangeOT" operation="base_add" value="-2"/>
+			<!-- eg destroy inventory item based on matrial ? -->
+		</effect_group>
+
+		<effect_group name="run particles, cleanup">
+			<triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar=".buffIsOnFireDisplay" operation="set" value="0"/>
+
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_onFire" local_offset="0,-.2,0" parent_transform="Hips"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="AttachParticleEffectToEntity" particle="p_onFire" local_offset="0,-.2,0" parent_transform="Hips"/>
+
+			<!-- NB: on va retirer Particle des autres burnings buff, sans retirer ces buffs -->
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_onFire"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_onFire"/>
+		</effect_group>
+	</buff>
+	
+	<!-- TODO: damage when wet - stack replace would stack damages !  -->
+	<buff name="buffShocked0" remove_on_death="true"
+			description_key="buffZBShockedDesc" tooltip_key="buffZBShockedDesc"
+			icon="ui_game_symbol_electric_power"  icon_color="255,100,100">
+		<damage_type value="electrical"/>
+		<stack_type value="duration"/>
+		<duration value="15.0"/>
+		<effect_group>
+			<passive_effect name="HealthChangeOT" operation="base_add" value="-2"/>
+			<passive_effect name="JumpStrength" operation="perc_subtract" value="0.2"/>
+			<passive_effect name="WalkSpeed" operation="perc_subtract" value="0.3"/>
+			<passive_effect name="RunSpeed" operation="perc_subtract" value="0.3"/>
+
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_electric_shock" local_offset="0,0.75,0"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="AttachParticleEffectToEntity" particle="p_electric_shock" local_offset="0,0.75,0"/>
+
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_electric_shock"/>
+
+			<triggered_effect trigger="onSelfBuffFinish" action="RemoveParticleEffectFromEntity" particle="p_electric_shock"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_electric_shock"/>
+			<!-- <triggered_effect trigger="onSelfBuffRemove" action="ModifyCVar" cvar="ETrapHit" operation="set" value="0"/> -->
+			<triggered_effect trigger="onSelfLeaveGame" action="RemoveParticleEffectFromEntity" particle="p_electric_shock"/>
+
+			<triggered_effect trigger="onSelfBuffStart" action="PlaySound" sound="electric_fence_impact"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="FadeOutSound" sound="electric_fence_impact"/>
+			<triggered_effect trigger="onSelfLeaveGame" action="StopSound" sound="electric_fence_impact"/>
+		</effect_group>
+	</buff>
+
+	<!--    -->
+	<buff name="buffCharged0" remove_on_death="true"
+			name_key="buffZBChargedName" description_key="buffZBChargedDesc" tooltip_key="buffZBChargedTooltip"
+			icon="ui_game_symbol_electric_power"  icon_color="255,100,100">
+		<damage_type value="electrical"/>
+		<stack_type value="replace"/>
+		<duration value="60.0"/>
+		<update_rate value="5.0"/>
+		<effect_group name="Random trigger">
+			<triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" buff="buffChargedEffect0"/>
+				<requirement name="RandomRoll" min_max="0,100" operation="LTE" value="30"/>
+		</effect_group>
+		<effect_group name="OnDamaged trigger">
+			<triggered_effect trigger="onOtherDamagedSelf" action="AddBuff" buff="buffChargedEffect0" target="self"/>
+			<triggered_effect trigger="onOtherDamagedSelf" action="AddBuff" buff="buffChargedEffect0" target="other"/>
+		</effect_group>
+		<!-- restrict range ? -->
+		<effect_group name="OnMeleeDamage trigger">
+			<triggered_effect trigger="onSelfDamagedOther" action="AddBuff" buff="buffChargedEffect0" target="self"/>
+			<triggered_effect trigger="onSelfDamagedOther" action="AddBuff" buff="buffChargedEffect0" target="other"/>
+			<requirement name="HoldingItemHasTags" tags="melee"/>
+		</effect_group>
+		<effect_group name="water">
+			<triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" buff="buffChargedEffect0" target="self"/>
+				<requirement name="HasBuff" buff="buffElementWet"/>
+		</effect_group>
+	</buff>
+
+	<!-- Does not respect duration when given by another buff ?!
+	What was cvar ETrapHit decremented ? bcz stack_type=stack or replace or duration !
+										stack_type=ignore (+ no update) fixed it -->
+	<buff name="buffChargedEffect0" remove_on_death="true" hidden="true"
+									icon="ui_game_symbol_electric_power" icon_color="255,50,50">
+		<damage_type value="electrical"/>
+		<stack_type value="ignore"/>
+		<duration value="1.0"/>
+		<effect_group name="stats">
+			<passive_effect name="HealthChangeOT" operation="base_add" value="-2"/>
+			<passive_effect name="JumpStrength" operation="perc_subtract" value="0.2"/>
+			<passive_effect name="WalkSpeed" operation="perc_subtract" value="0.3"/>
+			<passive_effect name="RunSpeed" operation="perc_subtract" value="0.3"/>
+		</effect_group>
+		<effect_group name="particle">
+			<triggered_effect trigger="onSelfBuffStart" action="AttachParticleEffectToEntity" particle="p_electric_shock" local_offset="0,0.75,0"/>
+			<triggered_effect trigger="onSelfEnteredGame" action="AttachParticleEffectToEntity" particle="p_electric_shock" local_offset="0,0.75,0"/>
+			<triggered_effect trigger="onSelfDied" action="RemoveParticleEffectFromEntity" particle="p_electric_shock"/>
+			<triggered_effect trigger="onSelfBuffFinish" action="RemoveParticleEffectFromEntity" particle="p_electric_shock"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RemoveParticleEffectFromEntity" particle="p_electric_shock"/>
+			<triggered_effect trigger="onSelfLeaveGame" action="RemoveParticleEffectFromEntity" particle="p_electric_shock"/>
+		</effect_group>
+		<effect_group name="sound">
+			<triggered_effect trigger="onSelfBuffStart" action="PlaySound" sound="electric_fence_impact"/>
+			<triggered_effect trigger="onSelfBuffFinish" action="FadeOutSound" sound="electric_fence_impact"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="FadeOutSound" sound="electric_fence_impact"/>
+			<triggered_effect trigger="onSelfLeaveGame" action="StopSound" sound="electric_fence_impact"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffZBBoiling"
+		name_key="buffZBBoilingName" description_key="buffZBBoilingDesc" tooltip_key="buffZBBoilingDesc"
+		icon="ui_game_symbol_hot" icon_color="255,50,0" icon_blink="true">
+		<damage_type value="heat"/>
+		<stack_type value="duration"/>
+		<duration value="2"/>
+		<effect_group>
+			<passive_effect name="HealthChangeOT" operation="base_add" value="-3"/>
+			<passive_effect name="WaterLossPerStaminaPointGained" operation="perc_add" value="6"/>
+			<triggered_effect trigger="onSelfBuffStart" action="ModifyScreenEffect" intensity="1" fade="2" effect_name="Hot"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="ModifyScreenEffect" intensity="0" fade="1" effect_name="Hot"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffRadiated0" remove_on_death="true"
+			description_key="buffZBRadiatedDesc" tooltip_key="buffZBRadiatedDesc"
+			icon="ui_game_symbol_radiation" icon_color="0,255,0">
+		<damage_type value="radiation"/>
+		<stack_type value="ignore"/>
+		<duration value="60"/>
+		<update_rate value="5"/>
+		<effect_group>
+			<passive_effect name="HealthChangeOT" operation="base_subtract" duration="0,10" value="1,3"/>
+			<passive_effect name="JumpStrength" operation="perc_subtract" duration="0,3.2" value="0.1,0.5" />
+		</effect_group>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffUpdate" action="AddBuff" buff="buffRagdoll" tags="running"/>
+				<!-- <requirement name="EntityTagCompare" tags="walking"/> -->
+				<!-- "running"
+				Entity alive:public FastTags CurrentMovementTag = FastTags.none; 
+				public virtual bool MovementRunning
+				public static readonly FastTags MovementTagRunning = FastTags.GetTag("running");
+				 -->
+				<!-- <requirement name="RandomRoll" min_max="0,100" operation="LTE" value="20"/>	 -->
+		</effect_group>
+	</buff>
+
+	<!-- ================================================
+		Motion buffs	
+	
+	could not make work <passive_effect name="JumpStrength" operation="perc_subtract" value="1.0" duration="11.0"/>
+	but instead <passive_effect name="JumpStrength" operation="perc_subtract" value="0.5" duration="11.0"/>
+	with <duration value="0"/> and no <update_rate> on buff
+	===================================================== -->
+	<buff name="buffRagdoll" remove_on_death="true">  <!-- NB: action="Ragdoll" is s'evanouir au sol -->	
+		<duration value="20"/>	
+		<stack_type value="ignore"/>	
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="Ragdoll" duration="1.0"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffGravityStrong" remove_on_death="true"
+		description_key="buffGravityStrongDesc" tooltip_key="buffGravityStrongDesc"
+		icon="ui_game_symbol_pack_mule" icon_color="200,50,50">
+		<stack_type value="replace"/>
+		<duration value="10"/>
+		<effect_group>
+			<passive_effect name="JumpStrength" operation="perc_set" value="0"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffGravity" remove_on_death="true"
+		description_key="buffGravityDesc" tooltip_key="buffGravityDesc"
+		icon="ui_game_symbol_pack_mule" icon_color="150,150,10">
+		<stack_type value="replace"/>
+		<duration value="10"/>
+		<effect_group>
+			<passive_effect name="JumpStrength" operation="perc_set" value="0.5"/>
+		</effect_group>
+	</buff>
+	<buff name="buffAntiGravity" remove_on_death="true"
+		description_key="buffAntiGravityDesc" tooltip_key="buffAntiGravityDesc"
+		icon="ui_game_symbol_pack_mule" icon_color="50,50,200">
+		<stack_type value="replace"/>
+		<duration value="10"/>
+		<effect_group>
+			<passive_effect name="JumpStrength" operation="perc_set" value="2.0"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffEjectable" remove_on_death="true"
+		description_key="buffEjectableDesc"
+		icon="ui_game_symbol_pack_mule" icon_color="50,50,200">
+		<stack_type value="ignore"/>
+		<duration value="60"/>
+		<update_rate value="5.0"/>
+		<effect_group name="OnDamaged trigger">
+			<triggered_effect trigger="onOtherDamagedSelf" action="Eject, Mods" target="self"/>	
+			<!-- <requirement name="HoldingItemHasTags" tags="melee"/>		 -->
+		</effect_group>
+	</buff>
+
+	<!-- Act as "ActionWhenWalkedOn" -->
+	<buff name="buffEjected" remove_on_death="true" hidden="true">
+		<stack_type value="ignore"/>
+		<duration value="1"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="Eject, Mods" target="self" checkothers="false"
+					strength="1.5" dirrandom="0.7" dsi="2,1.5,1"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffEjectedSmall" remove_on_death="true" hidden="true">
+		<stack_type value="ignore"/>
+		<duration value="1"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffUpdate" action="Eject, Mods" target="self" checkothers="false"
+					strength="1.0" dirrandom="0.2" dsi="2,0.5,0"/>
+		</effect_group>
+	</buff>
+
+
+
+	<buff name="buffEjectedSlime" remove_on_death="true" hidden="true">
+		<stack_type value="ignore"/>
+		<duration value="1"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="EjectSlime, Mods" target="self"/>
+			<triggered_effect trigger="onSelfBuffStart" action="Eject, Mods" target="self" checkothers="false"
+					strength="1.5" dirrandom="0.7" dsi="2,1.5,1"/>
+		</effect_group>
+	</buff>
+
+	<!-- ================================================
+		SIZE
+	===================================================== -->
+	<buff name="buffTinyGhost">
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="0.1"/>
+			<triggered_effect trigger="onSelfBuffFinish" action="RescaleEntity, Mods" scale="1.0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RescaleEntity, Mods" scale="1.0"/>
+		</effect_group>
+		<effect_group>
+			<passive_effect name="JumpStrength" operation="perc_set" value="10.0"/>
+			<passive_effect name="WalkSpeed" operation="perc_set" value="10.0"/>
+			<passive_effect name="RunSpeed" operation="perc_set" value="10.0"/>
+		</effect_group>
+	</buff>
+	<buff name="buffTinyGhostFix">
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="0.1"/>
+			<triggered_effect trigger="onSelfBuffFinish" action="RescaleEntity, Mods" scale="1.0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RescaleEntity, Mods" scale="1.0"/>
+		</effect_group>
+		<effect_group>
+			<passive_effect name="JumpStrength" operation="perc_set" value="0.0"/>
+			<passive_effect name="WalkSpeed" operation="perc_set" value="0.0"/>
+			<passive_effect name="RunSpeed" operation="perc_set" value="0.0"/>
+		</effect_group>
+	</buff>
+	<buff name="buffTinyGhostFast">
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="0.1"/>
+			<triggered_effect trigger="onSelfBuffFinish" action="RescaleEntity, Mods" scale="1.0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RescaleEntity, Mods" scale="1.0"/>
+		</effect_group>
+		<effect_group>
+			<passive_effect name="JumpStrength" operation="perc_set" value="30.0"/>
+			<passive_effect name="WalkSpeed" operation="perc_set" value="30.0"/>
+			<passive_effect name="RunSpeed" operation="perc_set" value="30.0"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffSmallPlayer" remove_on_death="true"
+		description_key="buffSmallestDesc" tooltip_key="buffSmallestDesc">
+		<duration value="20"/>
+		<stack_type value="replace"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="0.5"/>
+			<triggered_effect trigger="onSelfBuffFinish" action="RescaleEntity, Mods" scale="1.0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RescaleEntity, Mods" scale="1.0"/>
+		</effect_group>
+		<effect_group>
+			<passive_effect name="JumpStrength" operation="perc_set" value="0.55"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffSmall50" remove_on_death="true">
+		<duration value="10"/>
+		<stack_type value="duration"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="0.5"/>
+			<triggered_effect trigger="onSelfBuffFinish" action="RescaleEntity, Mods" scale="1.0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RescaleEntity, Mods" scale="1.0"/>
+		</effect_group>
+		<effect_group>
+			<passive_effect name="JumpStrength" operation="perc_set" value="0.5"/>
+			<passive_effect name="RunSpeed" operation="perc_set" value="20.0"/>
+			<passive_effect name="WalkSpeed" operation="perc_set" value="20.0"/>
+			<passive_effect name="CrouchSpeed" operation="perc_set" value="20.0"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffSmall80" remove_on_death="true"
+		description_key="buffSmallestDesc" tooltip_key="buffSmallestDesc">
+		<duration value="10"/>
+		<stack_type value="duration"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="0.8"/>
+			<triggered_effect trigger="onSelfBuffFinish" action="RescaleEntity, Mods" scale="1.0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RescaleEntity, Mods" scale="1.0"/>
+		</effect_group>
+		<effect_group>
+			<passive_effect name="JumpStrength" operation="perc_set" value="0.8"/>
+			<passive_effect name="RunSpeed" operation="perc_set" value="1.5"/>
+			<passive_effect name="WalkSpeed" operation="perc_set" value="1.5"/>
+			<passive_effect name="CrouchSpeed" operation="perc_set" value="1.5"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffBig30" remove_on_death="true" description_key="buffGiantDesc" tooltip_key="buffGiantDesc">
+		<duration value="10"/>
+		<stack_type value="duration"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="1.3"/>
+			<triggered_effect trigger="onSelfBuffFinish" action="RescaleEntity, Mods" scale="1.0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RescaleEntity, Mods" scale="1.0"/>
+		</effect_group>
+		<effect_group>
+			<!-- <passive_effect name="JumpStrength" operation="perc_set" value="1.3"/>
+			amplifie-->
+			<passive_effect name="JumpStrength" operation="perc_set" value="1.8"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffBigger70" remove_on_death="true" description_key="buffGiantDesc" tooltip_key="buffGiantDesc">
+		<duration value="10"/>
+		<stack_type value="duration"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="1.7"/>
+			<triggered_effect trigger="onSelfBuffFinish" action="RescaleEntity, Mods" scale="1.0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RescaleEntity, Mods" scale="1.0"/>
+		</effect_group>
+		<effect_group>
+			<!-- <passive_effect name="JumpStrength" operation="perc_set" value="1.5"/> -->
+			<passive_effect name="JumpStrength" operation="perc_set" value="2.5"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffGiantOnly" remove_on_death="true" description_key="buffGiantDesc" tooltip_key="buffGiantDesc">
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="5.0"/>
+			<triggered_effect trigger="onSelfBuffFinish" action="RescaleEntity, Mods" scale="1.0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RescaleEntity, Mods" scale="1.0"/>
+		</effect_group>
+		<effect_group>
+			<passive_effect name="JumpStrength" operation="perc_set" value="2.5"/>
+		</effect_group>
+	</buff>
+
+	<buff name="buffGiant" remove_on_death="true" description_key="buffGiantDesc" tooltip_key="buffGiantDesc">
+		<update_rate value="1"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffUpdate" action="GiantDestroy, Mods" target="self"/>
+		</effect_group>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="5.0"/>
+			<triggered_effect trigger="onSelfBuffFinish" action="RescaleEntity, Mods" scale="1.0"/>
+			<triggered_effect trigger="onSelfBuffRemove" action="RescaleEntity, Mods" scale="1.0"/>
+			<triggered_effect trigger="onSelfLeaveGame" action="RemoveBuff" buff="buffGiant"/>
+		</effect_group>
+		<effect_group>
+			<passive_effect name="JumpStrength" operation="perc_set" value="2.5"/>
+		</effect_group>
+	</buff>
+
+	<!-- ================================================
+		MARKERS
+	===================================================== -->
+	<buff name="buffMarkerMovingSands" remove_on_death="true" hidden="true"> 
+		<duration value="5"/><update_rate value="1"/><stack_type value="ignore"/>
+	</buff>
+
+
+	<!-- ================================================
+		Inventory
+	===================================================== -->
+	<buff name="buffSlippery" remove_on_death="true"	
+		name_key="buffZBSlipperyName" description_key="buffSlipperyDesc" tooltip_key="buffSlipperyDesc"	
+		icon="ui_game_symbol_water" icon_color="50,255,190">  <!-- ui_game_symbol_wet est un parapluie... ui_game_symbol_water= goutte ? -->	
+		<duration value="20"/>
+		<update_rate value="5"/>
+		<stack_type value="replace"/>
+		<effect_group>
+			<triggered_effect trigger="onSelfBuffUpdate" action="SlipperyInventory, Mods" duration="1.0"/>
+		</effect_group>
+	</buff>
+
+	<!-- ================================================
+		Others
+	===================================================== -->
+    <buff name="buffDarkScreen" hidden="true">
+      <stack_type value="ignore"/>
+	  <duration value="10"/>
+      <effect_group>
+        <triggered_effect trigger="onSelfBuffStart" action="ModifyScreenEffect" effect_name="Dark" intensity="100" fade=".5"/>
+        <triggered_effect trigger="onSelfBuffRemove" action="ModifyScreenEffect" effect_name="Dark" intensity="0" fade=".5"/>
+<!-- 
+        <triggered_effect trigger="onSelfBuffUpdate" action="RemoveBuff" buff="buffCrouching">
+          <requirement name="CVarCompare" cvar="_crouching" operation="Equals" value="0"/>
+        </triggered_effect> -->
+      </effect_group>
+    </buff>
+
+
+</append>
+
+
+</configs>

@@ -1,0 +1,98 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Token: 0x020001CE RID: 462
+public class BlockAirParticle : Block {
+	/** ProjectileMoveScript.OnDestroy drops an itemstack with the item (avec firingEntity et ProjectileID)
+
+	this.ProjectileID = ProjectileManager.AddProjectileItem(base.transform, -1, Voxel.voxelRayHitInfo.hit.pos, vector.normalized, this.itemValueProjectile.type);
+					}
+	Je recois le type d'item dans ProjectileManager
+	recoit la derniere vitesse connue : 
+	public static int AddProjectileItem(Transform _transform = null, int _pId = -1, Vector3 _position = default(Vector3), Vector3 _movementLastFrame = default(Vector3), int _itemValueType = -1)
+	
+gravité implémenté dans FixedUpdate(), ProjectileMoveScript.velocity is the speed
+I could harmony
+- to store it and use it to respanw
+- override oncollision to rebound by speed and not destroy
+or can I store external info reusable in the collision callback, like {pId -> initial direction}
+ProjectileManager is static
+
+	**/
+	/** A EXPLORER DANS PROJECTILEMOEVSCRIPT
+
+		if (flag && (GameUtils.IsBlockOrTerrain(Voxel.voxelRayHitInfo.tag) || Voxel.voxelRayHitInfo.tag.StartsWith("E_")))
+		{
+			if (this.firingEntity != null && !this.firingEntity.isEntityRemote)
+			{
+				entityAlive.MinEventContext.Other = (ItemActionAttack.FindHitEntity(Voxel.voxelRayHitInfo) as EntityAlive);
+				ItemActionAttack.AttackHitInfo attackDetails = new ItemActionAttack.AttackHitInfo
+				{
+					WeaponTypeTag = ItemActionAttack.RangedTag
+				};
+				ItemActionAttack.Hit(ProjectileMoveScript.gameManager.World, Voxel.voxelRayHitInfo, this.ProjectileOwnerID, EnumDamageTypes.Piercing, this.itemActionProjectile.GetDamageBlock(this.itemValueLauncher, ItemActionAttack.GetBlockHit(ProjectileMoveScript.gameManager.World, Voxel.voxelRayHitInfo), entityAlive, 0), this.itemActionProjectile.GetDamageEntity(this.itemValueLauncher, entityAlive, 0), 1f, 1f, EffectManager.GetValue(PassiveEffects.CriticalChance, this.itemValueLauncher, this.itemProjectile.CritChance.Value, entityAlive, null, this.itemProjectile.ItemTags, true, true, true, true, 1, true), ItemAction.GetDismemberChance(this.actionData, Voxel.voxelRayHitInfo), 0f, this.itemProjectile.MadeOfMaterial.SurfaceCategory, this.itemActionProjectile.GetDamageMultiplier(), this.getBuffActions(), attackDetails, this.itemActionProjectile.ActionExp, this.itemActionProjectile.ActionExpBonusMultiplier, null, null, ItemActionAttack.EnumAttackMode.RealNoHarvesting, false, false, false, null, -1, this.itemValueLauncher);
+				entityAlive.FireEvent(MinEventTypes.onProjectileImpact, false);
+	
+
+	**/
+	/**
+
+	smoke, big_smoke, ember_pile, hot_embers, torch_wall, campfire
+	// explosive smoke: OnEntityCollidedWithBlock, OnEntityWalking ...
+	**/
+    private string particle = "electric_fence_sparks";
+	private bool stays;
+	private float delay;
+    // needs removed ? or tick frequency ? 
+
+	// Token: 0x06000E62 RID: 3682 RVA: 0x00059160 File Offset: 0x00057360
+	public BlockAirParticle() {
+		base.IsNotifyOnLoadUnload = true;
+		this.IsRandomlyTick = true;
+	}
+
+	// Token: 0x06000E63 RID: 3683 RVA: 0x00059170 File Offset: 0x00057370
+	public override void Init() {
+		base.Init();
+		if (this.Properties.Values.ContainsKey("ParticleName")) particle = this.Properties.Values["ParticleName"];
+    }
+
+
+	public override void OnBlockRemoved(WorldBase _world, Chunk _chunk, Vector3i _blockPos, BlockValue _blockValue) {
+		base.OnBlockRemoved(_world, _chunk, _blockPos, _blockValue);
+	}
+
+	private void SpawnParticle(Vector3i _blockPos) {
+		Vector3 pos = CSutils.Vectors.ToFloat(_blockPos);
+        float lightValue = GameManager.Instance.World.GetLightBrightness(_blockPos) / 2f;
+        ParticleEffect pe = new ParticleEffect(particle, pos, lightValue, new Color(1f, 1f, 1f, 0.3f), "electric_fence_impact", null, false);
+        GameManager.Instance.SpawnParticleEffectServer(pe, -1);
+	}
+	// Token: 0x06000E65 RID: 3685 RVA: 0x000592D8 File Offset: 0x000574D8
+	public override void OnBlockAdded(WorldBase _world, Chunk _chunk, Vector3i _blockPos, BlockValue _blockValue) {
+		base.OnBlockAdded(_world, _chunk, _blockPos, _blockValue);
+        // Vector3 _pos = chunkCluster.ToWorldPosition(_blockPos + new Vector3(0.5f, 0.5f, 0.5f)); // From BlockMine
+		// SpawnParticle(_blockPos);
+	}
+
+	public override ulong GetTickRate() {
+		// return 20UL; // 1 second or 1 minute ? 20 fps ?
+		// return 5UL*20UL; // quite long time
+		return 1L;
+	}
+
+	private int CountTick =0 ;
+	public override bool UpdateTick(WorldBase _world, int _clrIdx, Vector3i _blockPos, BlockValue _blockValue, bool _bRandomTick, ulong _ticksIfLoaded, GameRandom _rnd) {
+		bool ret = base.UpdateTick(_world, _clrIdx, _blockPos, _blockValue, _bRandomTick, _ticksIfLoaded, _rnd);
+		Debug.Log(String.Format("BlockAirParticle.UpdateTick", CountTick));
+		CountTick = CountTick + 1;
+		if (true) { // (CountTick == 10) {
+			CountTick = 0;
+			SpawnParticle(_blockPos);
+		}
+		return true; // ret;
+	}
+
+	
+}

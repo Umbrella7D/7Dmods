@@ -1,0 +1,505 @@
+<configs>
+
+<append xpath="/entity_classes/entity_class[@name='playerMale']">
+	<effect_group>
+		<triggered_effect trigger="onSelfEnteredGame" action="AddBuff" target="self" buff="ZombiomeManager"/>
+		<triggered_effect trigger="onSelfRespawn" action="AddBuff" target="self" buff="ZombiomeManager"/>
+		<triggered_effect trigger="onSelfLeaveGame" action="ZBManager, Mods" arg="stop"/>
+	</effect_group>
+</append>
+
+<append xpath="/entity_classes">
+
+
+
+<!-- in player
+<property name="SurfaceCategory" value="organic"/>
+<property name="ParticleOnDeath" value="blood_death"/> -->
+
+
+
+<entity_class name="invisibleGhost">
+	<property name="Mesh" value="Gore/gore_block1_bonesPrefab"/>
+	<property name="ModelType" value="Custom"/>
+	<property name="Prefab" value="Backpack"/>
+	<property name="Class" value="EntityGhost, Mods"/>
+	<property name="Tags" value="ghost"/>
+	<!-- <property name="Parent" value="Animals"/> -->
+	<property name="Parent" value="Enemies"/>
+	<!-- TEST -->
+	<property name="AvatarController" value="AvatarUMAController"/>	
+	<property name="TimeStayAfterDeath" value="1"/>
+	<property name="IsEnemyEntity" value="true"/>
+	<property name="LootListOnDeath" value="4"/> <!-- required because of reasons -->
+	<property name="Faction" value="none"/>
+	<effect_group name="Base Effects">
+		<passive_effect name="HealthMax" operation="base_set" value="9000"/>
+	</effect_group>
+	<property name="SurfaceCategory" value="metal"/>
+	<property name="ParticleOnDeath" value="treeGib_small_dust"/>
+
+	<property name="CorpseBlock" value="air"/>
+	<property name="CorpseBlockChance" value="0"/>
+	<property name="Buffs" value="buffTinyGhost"/>
+</entity_class>
+
+<!-- <property name="Immunity" value="sickness;disease;wellness"/>
+
+TODO: UMA controler and move (at surface)
+TODO: multiple speed, and some non moving
+TODO: flying ghosts
+
+-->
+
+<!-- FIXME: gerbe sang on hit, dies from dev death pistol -->
+<entity_class name="zombieMoeGhost" extends="zombieTemplateMale">
+	<property name="Class" value="EntityGhost, Mods"/>
+	<property name="SizeScale" value="1.08"/>
+
+
+	<property name="Tags" value="entity,walker,ghost"/>
+	<!-- <property name="Mesh" value="Zombies/zombieStandardMoeRagdoll"/> -->
+	<property name="Mesh" value="#Entities/Zombies?Zombies/zombieStandardMoeHDRagdoll.prefab"/>
+
+	<property name="AvatarController" value="AvatarZombie01Controller"/>
+	<property name="ModelType" value="Standard"/>
+	<property name="WalkType" value="1"/>
+	<property name="Mass" value="210"/>
+	<property name="Weight" value="70"/>
+	<property name="PushFactor" value="20"/>
+	<property name="RootMotion" value="true"/>
+	<property name="HasDeathAnim" value="true"/>
+	<property name="TintMaterial2" value="41,38,34"/>
+	<!-- <property name="SoundRandom" value="Enemies/Base_Zombie_Male2/zombiemale2roam"/> -->
+	<!-- <property name="SoundAlert" value="Enemies/Base_Zombie_Male2/zombiemale2alert"/> -->
+	<!-- <property name="SoundSense" value="Enemies/Base_Zombie_Male2/zombiemale2sense"/> -->
+	<!-- <property name="SoundHurt" value="Enemies/Base_Zombie_Male2/zombiemale2pain"/> -->
+	<!-- <property name="SoundDeath" value="Enemies/Base_Zombie_Male2/zombiemale2death"/> -->
+	<!-- <property name="SoundAttack" value="Enemies/Base_Zombie_Male2/zombiemale2attack"/> -->
+	
+	<property name="AITask-1" value="Wander"/>
+	<property name="AITask-2" value="Wander"/>
+	<property name="AITask-3" value="Wander"/>
+	<property name="AITask-4" value="Wander"/>
+	<property name="AITask-5" value="Wander"/>
+	<property name="AITask-6" value="Wander"/>
+	<property name="AITask-7" value="Wander"/>
+	<property name="AITask-8" value="Wander"/>
+
+	<property name="Faction" value="none"/>
+	<!-- Gameplay -->
+	<!-- <property name="HandItem" value="meleeHandZombieStrong"/> -->
+	<property name="JumpMaxDistance" value="1.4, 1.5"/>
+	<!-- <property name="ExperienceGain" value="750"/> -->
+	<property name="ExperienceGain" value="0"/> <!-- XP strong -->
+
+	<effect_group name="Base Effects">
+		<passive_effect name="HealthMax" operation="base_set" value="9000"/>
+	</effect_group>
+
+	<property name="SurfaceCategory" value="metal"/>
+	<property name="ParticleOnDeath" value="treeGib_small_dust"/>
+
+	<!-- <property name="Buffs" value="buffSmall50"/> -->
+	<!-- FIXME has duration 10 -->
+	<!-- <property name="Buffs" value="buffTinyGhost"/> -->
+	
+</entity_class>
+
+<entity_class name="animalChickenGhost" extends="animalTemplateTimid">
+	<property name="Class" value="EntityGhost, Mods"/>
+	<property name="Tags" value="entity,ghost"/>
+	<!-- <property name="MapIcon" value="ui_game_symbol_tracking_chicken"/> -->
+	<property name="Mesh" value="Animals/CHICKEN/chickenPrefab"/>
+	<property name="Prefab" value="NPC"/>	
+	<property name="Parent" value="Animals"/>
+	<property name="Faction" value="animals"/>
+	<property name="PhysicsBody" value="chicken"/>
+	<property name="Mass" value="15"/>
+	<property name="Weight" value="10"/>	
+	<property name="SwimOffset" value="2"/>
+	<property name="HasRagdoll" value="false"/>
+	<property name="HasDeathAnim" value="false"/>
+
+	<effect_group name="Base Effects">
+		<passive_effect name="HealthMax" operation="base_set" value="9999"/>
+	</effect_group>
+	<!-- Gameplay -->	
+	<property name="MoveSpeedPanic" value="1"/>
+	<!-- <property name="ExperienceGain" value="130"/> -->
+	<property name="DeadBodyHitPoints" value="175"/>
+
+	<property name="SurfaceCategory" value="metal"/>
+	<property name="ParticleOnDeath" value="treeGib_small_dust"/>	
+</entity_class>
+
+
+<entity_class name="animalBearGhost" extends="animalTemplateHostile">
+	<property name="Class" value="EntityGhost, Mods"/>
+	<property name="Tags" value="entity,ghost"/>
+	<!-- <property name="MapIcon" value="ui_game_symbol_tracking_bear"/> -->
+	<!-- <property name="TrackerIcon" value="ui_game_symbol_tracking_bear"/> -->
+	<property name="AvatarController" value="AvatarAnimalController"/>
+	<property name="ModelType" value="Standard"/>
+	<property name="HasRagdoll" value="true"/>
+	<property name="HasDeathAnim" value="true"/>
+	<property name="RootMotion" value="true"/>
+	<!-- <property name="RagdollOnDeathChance" value=".5"/> -->
+	<property name="PhysicsBody" value="bear"/>
+	<property name="Mass" value="600"/>
+	<property name="Mesh" value="Animals/Bear/animalBearStandardRagdoll"/>
+
+	<property name="ParticleOnSpawn" value="ParticleEffects/RadiatedParticlesOnMesh" param1="SetShapeToMesh0"/>
+
+	<property name="AITask-1" value="Wander"/>
+	<property name="AITask-2" value="Wander"/>
+	<property name="AITask-3" value="Wander"/>
+	<property name="AITask-4" value="Wander"/>
+	<property name="AITask-5" value="Wander"/>
+	<property name="AITask-6" value="Wander"/>
+	<property name="AITask-7" value="Wander"/>
+	<property name="AITask-8" value="Wander"/>
+	<property name="AITask-9" value=""/>
+
+	<property name="SurfaceCategory" value="metal"/>
+	<property name="ParticleOnDeath" value="treeGib_small_dust"/>	
+	
+	<property name="Parent" value="Animals"/>
+	<property name="Faction" value="animals"/>
+	<!-- <property name="PhysicsBody" value="chicken"/> -->
+	<property name="Mass" value="500"/>
+	<property name="Weight" value="100"/>	
+	<!-- <property name="SwimOffset" value="2"/> -->
+	<property name="HasRagdoll" value="false"/>
+	<property name="HasDeathAnim" value="false"/>
+	<!-- <property name="AITarget-1" value="SetAsTargetIfHurt"/> -->
+	<!-- <property name="AITarget-2" value="BlockingTargetTask"/> -->
+	<!-- <property name="AITarget-3" value="SetNearestEntityAsTarget" data="class=EntityPlayer,13,8,EntityAnimalStag,0,0,EntityZombie,0,0"/> -->
+	<!-- <property name="AITarget-4" value=""/> -->
+
+	<!-- <property name="SoundHurt" value="Animals/Bear/bearpain"/>
+	<property name="SoundDeath" value="Animals/Bear/beardeath"/>
+	<property name="SoundRandom" value="Animals/Bear/bearroam"/>
+	<property name="SoundSense" value="Animals/Bear/bearsense"/>
+	<property name="SoundAlert" value="Animals/Bear/bearalert"/>
+	<property name="SoundAttack" value="Animals/Bear/bearattack"/>
+	<property name="SoundFootstepModifier" value="Animals/Bear/bear_footstep"/>
+	<property name="SoundGiveUp" value="Animals/Bear/beargiveup"/> -->
+
+	<!-- Gameplay -->
+	<!-- <property name="ExperienceGain" value="750"/>
+	<property name="DeadBodyHitPoints" value="600"/> -->
+
+	<!-- <drop event="Harvest" name="foodRawMeat" count="0" tool_category="Butcher"/>
+	<drop event="Harvest" name="foodRawMeat" tag="butcherHarvest" count="50"/>
+	<drop event="Harvest" name="resourceLeather" tag="butcherHarvest" count="15"/>
+	<drop event="Harvest" name="resourceAnimalFat" tag="butcherHarvest" count="5"/>
+	<drop event="Harvest" name="resourceBone" tag="butcherHarvest" count="25"/>
+	<drop event="Harvest" name="resourceBone" tag="allToolsHarvest" count="5"/>
+	<drop event="Harvest" name="resourceTestosteroneExtract" tag="butcherHarvest" count="2"/>
+	<drop event="Harvest" name="foodRawMeat" count="1" tag="WasteTreasuresCompleteHarvest"/>
+	<drop event="Harvest" name="resourceLeather" count="1" tag="WasteTreasuresCompleteHarvest"/>
+	<drop event="Harvest" name="resourceBone" count="1" tag="WasteTreasuresCompleteHarvest"/> -->
+	<effect_group name="Base Effects">
+		<passive_effect name="HealthMax" operation="base_set" value="9999"/>
+	</effect_group>
+</entity_class>
+
+--
+
+<entity_class name="animalVultureGhost" extends="animalTemplateHostile">
+	<property name="Class" value="EntityGhost, Mods"/>
+	<!-- <property name="Class" value="EntityVulture"/>	 -->
+	<property name="Tags" value="entity,ghost"/>
+	<!-- <property name="EntityType" value="Zombie"/> -->
+	<property name="AvatarController" value="AvatarAnimalController"/>
+	<property name="ModelType" value="Standard"/>
+	<!-- <property name="HasRagdoll" value="true"/> -->
+	<property name="PhysicsBody" value="vulture"/>
+	<property name="Mass" value="35"/>
+	<property name="Mesh" value="Animals/Vulture/animalVultureStandardRagdoll"/>
+	<property name="SizeScale" value=".7"/>
+
+	<property name="AITask-1" value=""/>
+	<property name="AITarget-1" value=""/>	
+
+	<!-- Gameplay -->
+	<property name="MoveSpeed" value="1"/>
+	<property name="MoveSpeedAggro" value="2.1, 2.1"/> <!-- Used when player in vehicle -->
+	<property name="MaxTurnSpeed" value="190"/>
+
+	<!-- <property name="HandItem" value="meleeHandAnimalZombieVulture"/> -->
+	<property name="Immunity" value="sickness;disease;wellness"/> <!-- bleeding; -->
+
+	<effect_group name="Base Effects">
+		<passive_effect name="HealthMax" operation="base_set" value="9999"/>
+	</effect_group>
+</entity_class>
+
+
+<entity_class name="animalChickenGhostV2">
+	<!-- Does not accept Firing, V1 neither
+	size of Shocking does not depend on mesh size (bear/chicken) -->
+	
+	<!-- Classify -->
+	<property name="Tags" value="entity,ghost"/>
+	
+	<property name="Faction" value="none"/>
+	<property name="IsEntityAnimal" value="true"/>
+	<property name="IsEnemyEntity" value="true"/>
+	<!-- false prevents killall ? -->
+	<!-- BODY -->
+	<property name="Mesh" value="Animals/CHICKEN/chickenPrefab"/>
+	<!-- <property name="Mesh" value="Animals/Stag/STAG"/> -->
+	<!-- pas normal que celui la plante, il marche sur bearghost -->
+	<!-- <property name="Mesh" value="Animals/Bear/animalBearStandardRagdoll"/> -->
+	<!-- <property name="Mesh" value="Animals/Boar/AnimalBoarStandardRagdoll"/>	 -->
+	<property name="Prefab" value="NPC"/>
+		<!-- <property name="Mesh" value="Animals/Stag/STAG"/> -->
+	
+	<!-- <property name="Prefab" value="/Entities/Animals/Wolf/animalStandardWolfRagdoll"/>
+	<property name="Mesh" value=""/> -->
+
+	<!-- transform child out of bounds
+	<property name="Prefab" value="NPC"/>
+	<property name="Mesh" value="/Entities/Animals/Wolf/animalStandardWolfRagdoll"/> -->
+	
+	<!-- NPE because of my ghost code ? -->
+	<property name="ModelType" value="Standard"/>
+
+	<property name="Class" value="EntityGhost, Mods"/>	
+	<property name="Parent" value="Animals"/>
+
+	<property name="AvatarController" value="GameObjectAnimalAnimation"/>
+	<property name="RotateToGround" value="true"/>	
+	<property name="PhysicsBody" value="chicken"/>
+	<!-- <property name="PhysicsBody" value="bear"/> -->
+	<property name="RootMotion" value="true"/>
+	<!-- Gameplay : Base -->
+	<!-- <property name="Mass" value="40"/>
+	<property name="Weight" value="70"/> -->
+	<property name="Mass" value="1"/>
+	<property name="Weight" value="1"/>
+	<property name="SurfaceCategory" value="metal"/>
+	<!-- Gameplay : Activity -->
+	<property name="MaxTurnSpeed" value="420"/>
+	<property name="SwimOffset" value="2"/>
+	<property name="MoveSpeed" value="1.0"/>
+	<property name="MoveSpeedPanic" value="1.6"/>
+	<property name="CanClimbLadders" value="false"/>
+	<property name="HasRagdoll" value="true"/>
+	<!-- <property name="SoundHurt" value="Animals/stagpain"/> -->
+	<!-- Gameplay : Death -->
+	<!-- <property name= "HasDeathAnim" value="false"/> -->
+	<!-- prevent killing ? -->
+	<property name="HasDeathAnim" value="false"/>
+	<property name="ParticleOnDeath" value="treeGib_small_dust"/>
+	<!-- <property name="CorpseBlock" value="goreBlockAnimal"/><property name="CorpseBlockChance" value="0"/> -->	
+	<!-- <property name="ExperienceGain" value="130"/> -->
+	<property name="DeadBodyHitPoints" value="175"/>	
+	<property name="SoundDeath" value="Animals/stagdeath"/>
+	<property name="TimeStayAfterDeath" value="1"/>
+	<!-- 300 -->
+
+	<effect_group name="Base Effects">
+		<passive_effect name="HealthMax" operation="base_set" value="9000"/>
+	</effect_group>
+	<!-- <effect_group name="Base Effects">
+		<passive_effect name="HealthMax" operation="base_set" value="50"/>
+		<passive_effect name="HealthMax" operation="perc_add" value="0"/> 
+	</effect_group> -->
+
+	<!-- <property name="CompassIcon" value="ui_game_symbol_enemy_dot" />
+	<property name="CompassUpIcon" value="ui_game_symbol_enemy_dot_up" />
+	<property name="CompassDownIcon" value="ui_game_symbol_enemy_dot_down" /> -->
+	<!-- <property name="TrackerIcon" value="ui_game_symbol_animal_tracker"/> -->
+	<property name="MapIcon" value="ui_game_symbol_tracking_chicken"/>
+	<!-- <property name="MapIcon" value="ui_game_symbol_enemy_dot" /> -->
+	
+	<!-- AI -->
+	<property name="AIPathCostScale" value="100, 100"/>
+	<!-- <property name="AITask-1" value="Swim"/>
+	<property name="AITask-2" value="RunawayWhenHurt"/>
+	<property name="AITask-3" value="RunawayFromEntity" data="class=EntityPlayer,EntityZombie,EntityEnemyAnimal"/>
+	<property name="AITask-4" value="Look"/>
+	<property name="AITask-5" value="Wander"/> -->
+	<property name="AITask-1" value="Wander"/>
+	<property name="AITask-2" value="Wander"/>
+	<property name="AITask-3" value="Wander"/>
+	<property name="AITask-4" value="Wander"/>
+	<property name="AITask-5" value="Wander"/>
+	<property name="AITask-6" value="Wander"/>
+	<property name="AITask-7" value="Wander"/>
+	<property name="AITask-8" value="Wander"/>
+
+	<!-- Stealth settings, see timidTemplate -->
+</entity_class>
+
+<entity_class name="ghost0" extends="animalChickenGhostV2">
+	<property name="Class" value="EntityGhost0, Mods"/>	
+</entity_class>
+<entity_class name="ghost1" extends="animalChickenGhostV2">
+	<property name="Class" value="EntityGhost1, Mods"/>	
+</entity_class>
+<entity_class name="ghost2" extends="animalChickenGhostV2">
+	<property name="Class" value="EntityGhost2, Mods"/>	
+</entity_class>
+<entity_class name="ghost3" extends="animalChickenGhostV2">
+	<property name="Class" value="EntityGhost3, Mods"/>	
+</entity_class>
+<entity_class name="ghost4" extends="animalChickenGhostV2">
+	<property name="Class" value="EntityGhost4, Mods"/>	
+</entity_class>
+<entity_class name="ghost5" extends="animalChickenGhostV2">
+	<property name="Class" value="EntityGhost5, Mods"/>	
+</entity_class>
+<entity_class name="ghost6" extends="animalChickenGhostV2">
+	<property name="Class" value="EntityGhost6, Mods"/>	
+</entity_class>
+<entity_class name="ghost7" extends="animalChickenGhostV2">
+	<property name="Class" value="EntityGhost7, Mods"/>	
+</entity_class>
+<entity_class name="ghost8" extends="animalChickenGhostV2">
+	<property name="Class" value="EntityGhost8, Mods"/>	
+</entity_class>
+<entity_class name="ghost9" extends="animalChickenGhostV2">
+	<property name="Class" value="EntityGhost9, Mods"/>	
+</entity_class>
+
+
+	<!-- <property name="Prefab" value="Entities/Resources/oreIronBoulderPrefab"/>	 -->
+	<!-- <property name="Prefab" value="#Entities/Resources/oreIronBoulderPrefab"/>	 -->
+	<!-- <property name="Prefab" value="#Entities/Vehicles?minibike_Prefab.prefab"/>
+	prefixes path by Entity or Prefabs-->
+<!-- <entity_class name="vehicleBoulder">
+	<property name="Tags" value="entity,vehicle"/>
+	<property name="Class" value="EntityMinibike"/>
+	<property name="Parent" value="Cars"/>
+
+	<property name="Mesh" value="Entities/Resources/oreIronBoulderPrefab"/>
+	<property name="Prefab" value="NPC"/>
+	<property name="ModelType" value="Standard"/>
+	<property name="SurfaceCategory" value="metal"/>
+	<property name="IgnoreTrigger" value="true"/>
+	<property name="LootListAlive" value="77"/>
+	<property name="IsEnemyEntity" value="false"/>
+	<property name="Explosion.ParticleIndex" value="6"/>
+	<property name="Explosion.RadiusBlocks" value="3"/>
+	<property name="Explosion.RadiusEntities" value="3"/>
+	<property name="Explosion.BlockDamage" value="20"/>
+	<property name="Explosion.EntityDamage" value="20"/>
+	<property name="RotateToGround" value="true"/>
+	<property name="Faction" value="none"/>
+	<property name="MapIcon" value="ui_game_symbol_minibike"/>
+</entity_class> -->
+
+	<!-- <property name="ModelType" value="Standard"/> -->
+<!-- <entity_class name="zombieBoulder" extends="zombieTemplateMale">
+	<property name="Tags" value="entity,walker,ghost"/>
+	<property name="Mesh" value="Entities/Resources/oreIronBoulderPrefab"/>
+	<property name="Prefab" value="NPC"/>
+
+	<property name="AvatarController" value="AvatarZombie01Controller"/>
+
+	<property name="WalkType" value="1"/>
+	<property name="Mass" value="210"/>
+	<property name="Weight" value="70"/>
+	<property name="PushFactor" value="20"/>
+	<property name="RootMotion" value="true"/>
+	<property name="HasDeathAnim" value="true"/>
+	<property name="TintMaterial2" value="41,38,34"/>
+	
+	<property name="AITask-1" value="Wander"/>
+	<property name="AITask-2" value="Wander"/>
+	<property name="AITask-3" value="Wander"/>
+	<property name="AITask-4" value="Wander"/>
+	<property name="AITask-5" value="Wander"/>
+	<property name="AITask-6" value="Wander"/>
+	<property name="AITask-7" value="Wander"/>
+	<property name="AITask-8" value="Wander"/>
+
+	<property name="Faction" value="none"/>
+	<property name="JumpMaxDistance" value="1.4, 1.5"/>
+
+	<effect_group name="Base Effects">
+		<passive_effect name="HealthMax" operation="base_set" value="9000"/>
+	</effect_group>
+
+	<property name="SurfaceCategory" value="metal"/>
+	<property name="ParticleOnDeath" value="treeGib_small_dust"/>
+</entity_class> -->
+
+
+<!-- NB: factions should be defined in npc.xml -->
+<entity_class name="zombieMoeOtherFactionSolo" extends="zombieTemplateMale">
+	<!-- <property name="Faction" value="none"/> -->
+	<property name="faction" value="solo" />
+	<property name="AITarget-1" value="SetAsTargetIfHurt" data="class=EntityAnimal,EntityEnemyAnimal,EntityZombie"/>
+	<property name="AITarget-2" value="BlockingTargetTask"/>
+	<property name="AITarget-3" value="SetNearestCorpseAsTarget" data="class=EntityZombie"/>
+	<property name="AITarget-4" value="SetNearestEntityAsTarget" data="class=EntityZombie,0,0,EntityEnemyAnimal,0,0"/>
+	<property name="AITask-5" value="ApproachAndAttackTarget" data="class=EntityZombie,0,EntityAnimal,0,EntityEnemyAnimal,0"/> <!-- class,maxChaseTime (return home) -->
+	
+
+	<property name="Tags" value="entity,zombie,walker"/>
+	<property name="Mesh" value="Zombies/zombieStandardMoeRagdoll"/>
+	<property name="AvatarController" value="AvatarZombie01Controller"/>
+	<property name="ModelType" value="Standard"/>
+	<property name="WalkType" value="1"/>
+	<property name="Mass" value="210"/>
+	<property name="Weight" value="70"/>
+	<property name="PushFactor" value="20"/>
+	<property name="RootMotion" value="true"/>
+	<property name="HasDeathAnim" value="true"/>
+	<property name="TintMaterial2" value="41,38,34"/>
+	<property name="SoundRandom" value="Enemies/Base_Zombie_Male2/zombiemale2roam"/>
+	<property name="SoundAlert" value="Enemies/Base_Zombie_Male2/zombiemale2alert"/>
+	<property name="SoundSense" value="Enemies/Base_Zombie_Male2/zombiemale2sense"/>
+	<property name="SoundHurt" value="Enemies/Base_Zombie_Male2/zombiemale2pain"/>
+	<property name="SoundDeath" value="Enemies/Base_Zombie_Male2/zombiemale2death"/>
+	<property name="SoundAttack" value="Enemies/Base_Zombie_Male2/zombiemale2attack"/>
+
+	<!-- Gameplay -->
+	<property name="HandItem" value="meleeHandZombieStrong"/>
+	<property name="JumpMaxDistance" value="1.4, 1.5"/>
+	<property name="ExperienceGain" value="750"/> <!-- XP strong -->
+
+	<effect_group name="Base Effects">
+		<passive_effect name="HealthMax" operation="base_set" value="250"/>
+		<passive_effect name="HealthMax" operation="perc_set" value="1"/> <!-- Zombie HP scale -->
+	</effect_group>
+</entity_class>
+
+<entity_class name="zombieMoeOtherFactionNice" extends="zombieTemplateMale">
+	<property name="Faction" value="nice"/>
+	<property name="Tags" value="entity,walker"/>
+	<property name="Mesh" value="Zombies/zombieStandardMoeRagdoll"/>
+	<property name="AvatarController" value="AvatarZombie01Controller"/>
+	<property name="ModelType" value="Standard"/>
+	<property name="WalkType" value="1"/>
+	<property name="Mass" value="210"/>
+	<property name="Weight" value="70"/>
+	<property name="PushFactor" value="20"/>
+	<property name="RootMotion" value="true"/>
+	<property name="HasDeathAnim" value="true"/>
+	<property name="TintMaterial2" value="41,38,34"/>
+	<property name="SoundRandom" value="Enemies/Base_Zombie_Male2/zombiemale2roam"/>
+	<property name="SoundAlert" value="Enemies/Base_Zombie_Male2/zombiemale2alert"/>
+	<property name="SoundSense" value="Enemies/Base_Zombie_Male2/zombiemale2sense"/>
+	<property name="SoundHurt" value="Enemies/Base_Zombie_Male2/zombiemale2pain"/>
+	<property name="SoundDeath" value="Enemies/Base_Zombie_Male2/zombiemale2death"/>
+	<property name="SoundAttack" value="Enemies/Base_Zombie_Male2/zombiemale2attack"/>
+
+	<!-- Gameplay -->
+	<property name="HandItem" value="meleeHandZombieStrong"/>
+	<property name="JumpMaxDistance" value="1.4, 1.5"/>
+	<property name="ExperienceGain" value="750"/> <!-- XP strong -->
+
+	<effect_group name="Base Effects">
+		<passive_effect name="HealthMax" operation="base_set" value="250"/>
+		<passive_effect name="HealthMax" operation="perc_set" value="1"/> <!-- Zombie HP scale -->
+	</effect_group>
+</entity_class>
+
+</append>
+</configs>

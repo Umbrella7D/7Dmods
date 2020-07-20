@@ -1,0 +1,42 @@
+using System;
+using System.Xml;
+using System.Collections;
+using UnityEngine;
+using System.Collections.Generic;
+
+using CSutils;
+using SdtdUtils;
+
+public class MinEventActionAttractZombie : MinEventActionTargetedBase {
+
+
+    public static GameRandom random = null;
+    public MinEventActionExplodeEntity() : base() {
+        if (random==null) random = GameRandomManager.Instance.CreateGameRandom();
+    }
+
+    public static string cvarKey = "ZB_ExplodeEntityCvar";
+    public override void Execute(MinEventParams _params) {
+        _params.Self
+
+
+	}
+
+
+    public static void Trigger(EntityAlive entity) {
+        Zombiome.Routines.Start(_Trigger(entity));
+    }
+
+    private static YieldInstruction dt = new WaitForSeconds(0.1f);
+    private static IEnumerator _Trigger(EntityAlive entity) {
+        Vector3 pos = entity.GetPosition();
+        string item = StringMap.Get(entity, cvarKey);
+        Printer.Print("MinEventActionExplodeEntity", entity, pos, item);
+        entity.SetDead();
+        yield return dt;
+        Vector3 offset = Vectors.Float.Randomize(random, 0.5f, Vectors.Float.UnitY);
+        Vector3 motion = offset.normalized * (1f + 5 * random.RandomFloat);
+        motion = motion.normalized * 3;
+        yield return SdtdUtils.EffectsItem.spawnItemGhost(item, pos + offset + Vectors.Float.UnitY, motion);
+    }
+}

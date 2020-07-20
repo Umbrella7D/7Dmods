@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <ModInfo>
+    <Name value="ZomBiome" />
+    <Description value="The world has permanent random activity, structured by biomes and geographic areas" />
+    <Author value="Umbrella" />
+    <Version value="1.0" />
+    <Website value="https://community.7daystodie.com/topic/20269-zombiome/" />
+  </ModInfo>
+</xml>
