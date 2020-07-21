@@ -746,7 +746,7 @@ TODO: use a cvar to control time ?? => compute time until end of phase!
 	===================================================== -->
 	<buff name="buffTinyGhost">
 		<effect_group>
-			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="0.1"/>
+			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="0.3"/>
 			<triggered_effect trigger="onSelfBuffFinish" action="RescaleEntity, Mods" scale="1.0"/>
 			<triggered_effect trigger="onSelfBuffRemove" action="RescaleEntity, Mods" scale="1.0"/>
 		</effect_group>
@@ -758,7 +758,7 @@ TODO: use a cvar to control time ?? => compute time until end of phase!
 	</buff>
 	<buff name="buffTinyGhostFix">
 		<effect_group>
-			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="0.1"/>
+			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="0.3"/>
 			<triggered_effect trigger="onSelfBuffFinish" action="RescaleEntity, Mods" scale="1.0"/>
 			<triggered_effect trigger="onSelfBuffRemove" action="RescaleEntity, Mods" scale="1.0"/>
 		</effect_group>
@@ -770,7 +770,7 @@ TODO: use a cvar to control time ?? => compute time until end of phase!
 	</buff>
 	<buff name="buffTinyGhostFast">
 		<effect_group>
-			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="0.1"/>
+			<triggered_effect trigger="onSelfBuffStart" action="RescaleEntity, Mods" scale="0.3"/>
 			<triggered_effect trigger="onSelfBuffFinish" action="RescaleEntity, Mods" scale="1.0"/>
 			<triggered_effect trigger="onSelfBuffRemove" action="RescaleEntity, Mods" scale="1.0"/>
 		</effect_group>
