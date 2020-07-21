@@ -67,6 +67,7 @@ public class Zombiome {
 
         Printer.Write("Zombiome.Init():", playerId);
 
+        CSutils.Routines.Sanitizer.Fixer = () => ZombiomeManager._Reset(-1);
         CSutils.Catcher.SwallowErrors = SwallowError;
 
         rand = GameRandomManager.Instance.CreateGameRandom();

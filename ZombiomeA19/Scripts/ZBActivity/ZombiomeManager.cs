@@ -31,7 +31,7 @@ public class ZombiomeManager {
     public static void Reset(int pid, string sel="") {
         GameManager.Instance.StartCoroutine(_Reset(pid, sel)); 
     }
-    private static IEnumerator _Reset(int pid, string sel) {
+    public static IEnumerator _Reset(int pid, string sel="") {
         ZombiomeManager.Stop(pid, false);
         yield return new WaitForSeconds(1f);
         ZBActivity.ZombiomeActivitySelector.SelectDebug(sel);

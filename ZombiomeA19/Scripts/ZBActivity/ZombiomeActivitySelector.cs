@@ -74,6 +74,8 @@ public class ZombiomeActivitySelector {
         // Inventory
         WActivities["FillBag:2"] = zone => new ZBActivity.Entities.FillBag(zone).ApplyConfigure();
         WActivities["Slippery:2"] = zone => new ZBActivity.Entities.Slippery(zone).ApplyConfigure();
+        WActivities["NoSack:1"] = zone => new ZBActivity.Entities.NoSack(zone).ApplyConfigure();
+        
         // fixme: hand animation not updated when pistol taken back from ground after fall
       
         // Motion / Size

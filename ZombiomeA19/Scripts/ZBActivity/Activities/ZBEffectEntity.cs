@@ -207,6 +207,20 @@ public class Slippery : AtPlayer {
     }
 }
 
+public class NoSack : AtPlayer {
+    public NoSack(Zone zone) : base(zone) {
+        EffectType = EffectType.Inventory;
+        Printer.Log(60, "NoSack() done");
+    }
+    public override void Effect1(EntityPlayer player, Emplacement place, OptionEffect opt) {
+        player.Buffs.AddBuff("buffZBNosack");
+    }
+    public override void Configure() {
+        opt.OptionEntity.buff = "buffZBNosack";
+        Printer.Log(60, "NoSack Configure: done");
+    }
+}
+
 public class FillBag : AtPlayer {
     private Ghost ParticleGhosts;
     public FillBag(Zone zone) : base(zone) {

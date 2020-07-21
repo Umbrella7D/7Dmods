@@ -110,7 +110,40 @@ public class Routines {
         Group.Remove(index);
     }
 
+    public static class Sanitizer {
+        private static long t0 = 0;
+        private static int nErr = 0;
+        public static void Add() {
+            long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            if (now - t0 > 5) {nErr = 0; t0 = now;}
+            nErr = nErr +1;
+            if (nErr > 10) Fix();
+        }
+        public static bool Blocked {
+            get {
+                long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                if (now - t0 > 5) {nErr = 0;t0 = now;}
+                return nErr > 10;
+            }
+        }
+
+        private static bool Fixing = false;
+        public static Func<IEnumerator> Fixer = null;
+        public static void Fix() {
+            // Don't use Routines for that one, they are paused ? or just swallowed ?
+            GameManager.Instance.StartCoroutine(_Fix());
+        }
+        public static IEnumerator _Fix() {
+            Fixing = true;
+            if (Fixer != null) yield return Fixer();
+            Fixing = false;
+        }
+    }
+
 }
+
+
+
 
 class Catcher : IEnumerator {
     /** Basically a debug tool to print stacktrace on error
@@ -157,10 +190,17 @@ class Catcher : IEnumerator {
                     Printer.WriteError(name, ex);
                 }
                 else {
-                    Printer.WriteError(name, ex);
-                    Printer.Print("ERROR in Routine:", name);
-                    Printer.Print(ex); // prints the stack trace, even better than adding actual names ?
-                    throw ex;
+                    Routines.Sanitizer.Add();
+                    // Printer.WriteError(name, ex);
+                    // Printer.Print("ERROR in Routine:", name);
+                    // Printer.Print(ex); // prints the stack trace, even better than adding actual names ?
+                    if (Routines.Sanitizer.Blocked) {
+                        Printer.Print("SanitizerERROR in Routine:", name, ex);
+                    } else {
+                        Printer.Print("ERROR in Routine:", name, ex);
+                        throw ex;
+                    }
+                    
                 }
             }
         }
