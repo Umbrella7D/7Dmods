@@ -158,6 +158,20 @@ machete_swinglight
 
     public static int SetSoundMode = -1;
     private static YieldInstruction _WaitFrame = new WaitForEndOfFrame();
+
+    public static IEnumerator PlayZBSoundLoop(string[] sounds, Vector3 pos, EntityPlayer player, World World = null,
+                        int _SetSoundMode = 1, int reduce=0, float rate= 1f) {
+        string sound = sounds[Rand.Next(0,sounds.Length)];
+        return PlayZBSound(sound, pos, player, World, _SetSoundMode, reduce, rate);
+    }
+
+
+    public static IEnumerator PlayZBSound(string[] sounds, Vector3 pos, EntityPlayer player, World World = null,
+                            int _SetSoundMode = 1, int reduce=0, float rate= 1f) {
+        string sound = sounds[Rand.Next(0,sounds.Length)];
+        return PlayZBSound(sound, pos, player, World, _SetSoundMode, reduce, rate);
+    }
+
     public static IEnumerator PlayZBSound(string sound, Vector3 pos, EntityPlayer player, World World = null,
                             int _SetSoundMode = 1, int reduce=0, float rate= 1f) {
         if (rate < 1 && Rand.NextDouble() >= rate) return Iterating.Iter.Empty(); //(new object[]{_WaitFrame}).GetEnumerator();

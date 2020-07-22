@@ -23,11 +23,9 @@ public class Peak : MultiEffect {
     public override void Effect1(EntityPlayer player, Emplacement place,  OptionEffect opt) {
         Printer.Log(60, "Peak Effect1", place.position, place.ipos, opt.OptionBlock.blocks, opt.OptionShape.shape);
         // FIXME: this syntax cannot be merged !
-        Zombiome.Routines.Named("Peak").Start(
-            // treeGib_birch_15m creates falling leaves above smoke :(
-            Routines.Call(biome.groundParticleEffect, place.ipos), // "treeGib_burnt_small"        
-            // EffectsItem.PlayZBSound("avalanche", place.position, player, World, 1),
-            EffectsItem.PlayZBSound(this.biome.groundNoise(), place.position, player, World, 2, 0, 0.5f),            
+        Zombiome.Routines.Named("Peak").Start(          
+            Routines.Call(biome.groundParticleEffect, place.ipos),                 
+            ZBActivity.Environment.ZBSounds.Play(this.biome.groundNoise, place.position, player, World, 2, 0, 0.2f),            
             new WaitForSeconds(1f),
             EffectsGround.Peak(player, place, opt)
         );
@@ -70,7 +68,7 @@ public class Geyser : MultiEffect {
         Zombiome.Routines.Named("Geyser").Start(
             // treeGib_birch_15m creates falling leaves above smoke :(
             Routines.Call(EffectsItem.SpawnParticle, place.position, "treeGib_burnt_small"),
-            EffectsItem.PlayZBSound("player_swim", place.position, player, World, 2),     
+            ZBActivity.Environment.ZBSounds.Play(ZBiomeInfo.NoiseWater, place.position, player, World, 2, 0, 0.5f),     
             new WaitForSeconds(1f),
             EffectsGround.Peak(player, place, opt)
         );
@@ -147,9 +145,8 @@ public class Rift : Peak {
     public override void Effect1(EntityPlayer player, Emplacement place,  OptionEffect opt) {
         Printer.Log(40, "Rift Effect1", place.position, place.ipos, opt.OptionBlock.blocks, opt.OptionShape.shape);
         Zombiome.Routines.Named("Rift").Start(
-            Routines.Call(biome.groundParticleEffect, place.ipos),
-            // EffectsItem.PlayZBSound("snakeattack", place.position, player, World, 2),
-            EffectsItem.PlayZBSound(this.biome.groundNoise(), place.position, player, World, 2, 0, 0.5f),   
+            Routines.Call(biome.groundParticleEffect, place.ipos),            
+            ZBActivity.Environment.ZBSounds.Play(this.biome.groundNoise, place.position, player, World, 2, 0, 0.2f),   
             new WaitForSeconds(1f),
             EffectsGround.Rift(player, place, opt)
         );
@@ -220,8 +217,7 @@ public class Wave : Peak {
         Zombiome.Routines.Named("Wave").Start(
             Routines.Call(biome.groundParticleEffect, place.ipos),
             // Routines.Call(__BUG), // TEST
-            EffectsItem.PlayZBSound(this.biome.groundNoise(), place.position, player, World, 2, 0, 0.5f), 
-            // EffectsItem.PlayZBSound("trunkbreak", place.position, player, World, 1),
+            ZBActivity.Environment.ZBSounds.Play(this.biome.groundNoise, place.position, player, World, 2, 0, 0.2f),            
             new WaitForSeconds(1f),
             EffectsGround.Wave(player, place, opt)
         );
@@ -254,9 +250,8 @@ public class TrapLine : Peak {
     public override void Effect1(EntityPlayer player, Emplacement place,  OptionEffect opt) {
         Printer.Log(40, "TrapLine Effect1", place.position, place.ipos, opt.OptionBlock.blocks, opt.OptionShape.shape);
         Zombiome.Routines.Named("TrapLine").Start(
-            Routines.Call(biome.groundParticleEffect, place.ipos),
-            // EffectsItem.PlayZBSound("stepwoodbigcreak", place.position, player, World, 2),
-            EffectsItem.PlayZBSound(this.biome.groundNoise(), place.position, player, World, 2, 0, 0.5f),  
+            Routines.Call(biome.groundParticleEffect, place.ipos),           
+            ZBActivity.Environment.ZBSounds.Play(this.biome.groundNoise, place.position, player, World, 2, 0, 0.2f),  
             new WaitForSeconds(1f),
             EffectsGround.TrapLine(player, place, opt)
         );
@@ -354,8 +349,7 @@ public class PeakAt : AtEntities {
         Printer.Log(40, "Peak Effect1", place.position, place.ipos, opt.OptionBlock.blocks, opt.OptionShape.shape);
         Zombiome.Routines.Named("PeakAt").Start(
             Routines.Call(biome.groundParticleEffect, place.ipos),
-            EffectsItem.PlayZBSound(this.biome.groundNoise(), place.position, player, World, 2, 0, 0.5f),  
-            // EffectsItem.PlayZBSound("stepwoodsmallcreak", place.position, player, World, 1),
+            ZBActivity.Environment.ZBSounds.Play(this.biome.groundNoise, place.position, player, World, 2, 0, 0.2f),  
             new WaitForSeconds(1f),
             EffectsGround.Peak(player, place, opt)
         );

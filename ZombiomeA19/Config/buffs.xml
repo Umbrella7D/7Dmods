@@ -786,7 +786,7 @@ TODO: use a cvar to control time ?? => compute time until end of phase!
 		</effect_group>
 	</buff>
 
-	<buff name="buffSmallPlayer" remove_on_death="true"
+	<buff name="buffZBDwarf" remove_on_death="true"
 		description_key="buffSmallestDesc" tooltip_key="buffSmallestDesc">
 		<duration value="20"/>
 		<stack_type value="replace"/>

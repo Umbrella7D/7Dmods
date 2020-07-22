@@ -72,6 +72,17 @@ public class ConsoleCmdExplShowExplo : ConsoleCmdAbstract {
             Printer.Print(color);
             ExecuteParticle(_params[1], player.GetPosition() + new Vector3(0,0,6), color);
             return;
+        }  else if (_params[0] == "pr") {
+            Color color = Color.white;
+            if (_params.Count >=3 ) {
+                string[] split = _params[2].Split(',');
+                float[] def = new float[]{0,0,0,1};
+                for( int k=0; k<split.Length; k++ ) def[k] = float.Parse(split[k]);
+                color = new Color(def[0], def[1], def[2], def[3]);
+            }
+            Printer.Print(color);
+            ExecuteParticleRot(_params[1], player.GetPosition() + new Vector3(0,0,6), color);
+            return;
         } else if (_params[0] == "pc") {
             Color color;
             color = new Color(1f, 0f, 0f);
@@ -139,7 +150,20 @@ public class ConsoleCmdExplShowExplo : ConsoleCmdAbstract {
             color, "electric_fence_impact", null, false
         ); //2 e string is sound
         GameManager.Instance.SpawnParticleEffectServer(pe, -1);
+   }
 
+    public void ExecuteParticleRot(string name, Vector3 pos, Color color) {
+        if (name.StartsWith("p_")) name = name.Substring(2);
+        Printer.Print("ConsoleCmdExplShowExplo ParticleEffect", name);
+        float lightValue = GameManager.Instance.World.GetLightBrightness(Vectors.ToInt(pos)) / 2f;
+        Quaternion rot = Quaternion.identity;
+        rot.SetFromToRotation(Vectors.Float.UnitY, -Vectors.Float.UnitY);
+        ParticleEffect pe = new ParticleEffect(
+            name, pos, rot,
+            lightValue,
+            color, "electric_fence_impact", null
+        ); //2 e string is sound
+        GameManager.Instance.SpawnParticleEffectServer(pe, -1);
    }
 
     public void ExecuteParticleAttach(string name, Vector3 pos) {

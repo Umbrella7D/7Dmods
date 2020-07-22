@@ -253,11 +253,12 @@
       <!-- <triggered_effect trigger="onProjectileImpact" action="ParticlesAtPos, Mods" dt="100" rep="1"
                         particle="treeGib_small_dust" offset="-1,0,-1" rpos="2,2,2"
                         color="0.2,0.2,0.85,0.2" rcol="0.1,0.1,0.1"/> -->
-      <triggered_effect trigger="onProjectileImpact" action="ParticlesAtPos, Mods" dt="100" rep="1"
-                        particle="treeGib_winter02" offset="-1,-7,-1" rpos="1,1,1"/>
-      <triggered_effect trigger="onProjectileImpact" action="ParticlesAtPos, Mods" dt="300" rep="3"
-                        particle="paint_splash" offset="-1,0,-1" rpos="1,2,1"/>
-                        
+      <triggered_effect trigger="onProjectileImpact" action="ParticlesAtPos, Mods" dt="500" rep="2"
+                        particle="treeGib_winter03" offset="-1,-11,-1" rpos="0,2,0"/>
+      <triggered_effect trigger="onProjectileImpact" action="ParticlesAtPos, Mods" dt="200" rep="2"
+                        particle="paint_splash" offset="0,0,-2" rpos="1,2,1"/>
+      <triggered_effect trigger="onProjectileImpact" action="ParticlesAtPos, Mods" dt="400" rep="3"
+                        particle="paint_splash" offset="0,2,-2" rpos="1,2,1"/>                        
     </effect_group>
   </item>
 
@@ -269,7 +270,7 @@
     <effect_group tiered="false"> 
       <triggered_effect trigger="onProjectileImpact" action="AddBuff" target="positionAOE" range="3" buff="buffZBPoison"/>
       <triggered_effect trigger="onProjectileImpact" action="ParticlesAtPos, Mods" dt="100" rep="1" 
-                        particle="treeGib_small_dust" offset="-1,-1,-1" rpos="1,2,1"
+                        particle="treeGib_small_dust" offset="-1,-1,-1" rpos="0,0,0"
                         color="0.2,0.9,0.15,0.7" rcol="0.1,0.1,0.1"/>
     </effect_group>
   </item>
@@ -296,10 +297,12 @@
     <effect_group tiered="false"> 
       <triggered_effect trigger="onProjectileImpact" action="AddBuff" target="positionAOE" range="2.7" buff="buffCharged0"/>
       <triggered_effect trigger="onProjectileImpact" action="ParticlesAtPos, Mods" dt="100" rep="1"
-                        particle="treeGib_small_dust" offset="-1,-1,-1" rpos="1,1,1"
+                        particle="treeGib_small_dust" offset="-1,-1,-1" rpos="0,1,0"
                         color="0.8,0.11,0.8,0.6" rcol="0.1,0.1,0.1"/>
-      <triggered_effect trigger="onProjectileImpact" action="ParticlesAtPos, Mods" dt="300" rep="3"
+      <triggered_effect trigger="onProjectileImpact" action="ParticlesAtPos, Mods" dt="300" rep="2"
                         particle="electric_fence_sparks" offset="-1,0,-1" rpos="1,1,1"/>
+      <triggered_effect trigger="onProjectileImpact" action="ParticlesAtPos, Mods" dt="300" rep="3"
+                  particle="electric_fence_sparks" offset="-1,1,-1" rpos="1,1,1"/>
     </effect_group>
   </item>
 
