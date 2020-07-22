@@ -72,6 +72,15 @@ public class ConsoleCmdExplShowExplo : ConsoleCmdAbstract {
             Printer.Print(color);
             ExecuteParticle(_params[1], player.GetPosition() + new Vector3(0,0,6), color);
             return;
+        } else if (_params[0] == "pc") {
+            Color color;
+            color = new Color(1f, 0f, 0f);
+            ExecuteParticle(_params[1], player.GetPosition() + new Vector3(-3,0,6), color);
+            color = new Color(0f, 1f, 0f);
+            ExecuteParticle(_params[1], player.GetPosition() + new Vector3(0,0,6), color);
+            color = new Color(0f, 0f, 1f);
+            ExecuteParticle(_params[1], player.GetPosition() + new Vector3(3,0,6), color);
+            return;        
         } else if (_params[0] == "pa") {
             ExecuteParticleAttach(_params[1], player.GetPosition());
             return;
@@ -268,9 +277,9 @@ p_treeGib_dead_01.prefab
         impact_ : tout petit
         impact_metal_on_metal : tout petit feu d'artifice, spot
 
-        paint_splash : petite fumée, spot
+        paint_splash : petite fumée, spot - A19: tres blanche/etincelle
 
-        rocketLauncherFire : spot, petite explo blanche, NW
+        rocketLauncherFire : spot, petite explo blanche, NW a19: jaune
 
         sandstorm: degradé aérien leger, inf
 
@@ -280,19 +289,18 @@ p_treeGib_dead_01.prefab
         smokestorm: W, brouillard
         snowstorm1: W
         supply_crate_impact: black smoke, small, spot
-        treefall: grosse fumée noir étalée, spot
+        treefall: grosse fumée noir étalée, spot - A19: bcp moins grande
 
-        treeGib_birch_15m: fumée grise, spot
+        treeGib_birch_15m: fumée grise, spot a19: rougeatre + feuille
 
-        wire_tool_sparks: boule electrique, spot
+        wire_tool_sparks: boule electrique, spot - a19: etincelle petit cyan
 
         treeGib_winter01: chute de feuille et neige, fin
 
         p_treeGib_maple_17m : feuille tombante presque jaunes
 
         treeGib_sapling : juste fumée, petite
-
-        treeGib_small_dust : juste fumée, plus grande
+        treeGib_small_dust : juste fumée, plus grande, jolie
 
         p_treeGib_winter_XXX : feuilles qui tombe puis neige
 

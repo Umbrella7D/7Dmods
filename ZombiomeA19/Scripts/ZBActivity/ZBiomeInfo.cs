@@ -139,6 +139,11 @@ public class ZBiomeInfo{
         return _groundSmokeProjectile[Random.Next(_groundSmokeProjectile.Length)];
     }
 
+    public string[] _groundNoise;
+    public string groundNoise() {
+        return _groundNoise[Random.Next(_groundNoise.Length)];
+    }
+
     public Weighted<GhostData> Ghost;
     public GhostData particleStorm;
 
@@ -162,6 +167,9 @@ public class ZBiomeInfo{
         desert.fillBag = "resourceBrokenGlass,resourceCrushedSand,terrDirt,terrSand";
         desert.envProj = "ZBProj_sand,ZBProj_electric,ZBProj_eject,ZBProj_ragdoll,ZBProj_poison";
         desert.groundSmokeProjectile = "p_impact_stone_on_plant,p_impact_stone_on_earth";
+        // desert._groundNoise = "stonedestroy1,stonedestroy2,plantdestroy2,stepsand".Split(',');
+        desert._groundNoise = "blockdestroy_stone,blockdestroy_sand".Split(',');
+        
         desert.groundColor = new Color(218f/255,165f/255,32f/255);
         desert.particleStorm = GhostData.ssandEffect;
         desert.waterBlock = "waterBoil,waterBoil";
@@ -185,6 +193,8 @@ public class ZBiomeInfo{
         burnt_forest.fillBag = "terrDirt,terrSand";
         burnt_forest.envProj = "ZBProj_fire,ZBProj_fireHuman,ZBProj_fireHuman,ZBProj_eject,ZBProj_ragdoll";
         burnt_forest.groundSmokeProjectile = "p_blockdestroy_stone,p_impact_stone_on_earth";
+        // burnt_forest._groundNoise = "earthDestroy,earthDestroy2,stonedestroy3,stepstone,stepsand,stepdirt".Split(',');
+        burnt_forest._groundNoise = "blockdestroy_stone,blockdestroy_dirt".Split(',');
         burnt_forest.particleStorm = GhostData.ssmokeEffect;
         burnt_forest.groundColor = new Color(139f/255,69f/255,19f/255);
         burnt_forest.waterBlock = "waterBoil,waterBoil";
@@ -207,7 +217,9 @@ public class ZBiomeInfo{
         pine_forest.animals = "animalWolf,animalMountainLion";
         pine_forest.fillBag = "resourceWood,resourceClayLump";
         pine_forest.envProj = "ZBProj_fire,ZBProj_eject,ZBProj_sand,ZBProj_ragdoll,ZBProj_poison"; 
-        pine_forest.groundSmokeProjectile = "p_treeGib_birch_small,p_impact_stone_on_plant,p_impact_stone_on_plant";  // p_treeGib_birch_6m is too big ?
+        pine_forest.groundSmokeProjectile = "p_impact_stone_on_plant,p_impact_stone_on_plant";  // p_treeGib_birch_6m is too big ?
+        // pine_forest._groundNoise = "earthDestroy,wooddestroy,stonedestroy3,steptree,stepwoodsmallcreak,stepleaves".Split(',');
+        pine_forest._groundNoise = "blockdestroy_stone,blockdestroy_dirt,blockdestroy_wood".Split(',');
         pine_forest.particleStorm = GhostData.ssmokeEffect;
         pine_forest.groundColor = new Color(34f/255,139f/255,34f/255); 
         pine_forest.waterBlock = "terrWaterPOI,terrWaterPOI,terrWaterPOI,terrWaterPOI,waterBoil";
@@ -230,6 +242,8 @@ public class ZBiomeInfo{
         snow.fillBag = "resourceSnowBall";
         snow.envProj = "ZBProj_freeze,ZBProj_electric,ZBProj_eject,ZBProj_ragdoll,ZBProj_freeze";
         snow.groundSmokeProjectile= "p_treeGib_winter01,p_paint_splash2,p_impact_bullet_on_snow,p_blockdestroy_snow";
+        // snow._groundNoise = "earthDestroy,wooddestroy,stonedestroy3,stepsnow".Split(',');
+        snow._groundNoise = "blockdestroy_stone,blockdestroy_snow,blockdestroy_snow".Split(',');
         snow.particleStorm = GhostData.ssnowEffect;
         snow.groundColor = new Color(176f/255,224f/255,230f/255); 
         snow.waterBlock = "waterFreeze,waterFreeze,waterFreeze,waterBoil,terrWaterPOI";
@@ -252,6 +266,8 @@ public class ZBiomeInfo{
         wasteland.fillBag = "resourceScrapPolymers";
         wasteland.envProj = "ZBProj_spark,ZBProj_poison,ZBProj_spark,ZBProj_eject,ZBProj_sand";
         wasteland.groundSmokeProjectile = "p_impact_wood_on_earth,p_blockdestroy_metal";
+        // wasteland._groundNoise = "earthDestroy,metaldestroy1,metaldestroy2,stepmetalbigcreak,stepdirt,stepmetal".Split(',');
+        snow._groundNoise = "blockdestroy_stone,blockdestroy_metal,blockdestroy_metal".Split(',');
         wasteland.particleStorm = GhostData.ssandEffect;
         wasteland.groundColor = new Color(188f/255,143f/255,143f/255); 
         wasteland.waterBlock = "terrWaterPOI,terrWaterPOI,waterSlime";

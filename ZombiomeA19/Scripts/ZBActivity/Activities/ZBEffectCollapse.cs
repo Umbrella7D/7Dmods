@@ -49,6 +49,8 @@ public class Flood : SingleChunked {
         WaterId = Block.GetBlockByName("water", false).blockID;
     }
     public override IEnumerator Regen(EntityPlayer player, Vector3i zchunk, int iniguess) {
+        yield return EffectsItem.PlayZBSound("player_swim", player.GetPosition(), player, World, 2); 
+
         int gen = ZChunk.Size(this.gen);
         Vector3[] positions = ZChunk.Positions(Zombiome.worldSeed, zchunk, gen);
 
@@ -107,6 +109,8 @@ public class RiftCollapse : MultiEffect {
         // Zombiome.Routines.Start(EffectsCollapse.Rift(player, place, opt), "RiftCollapse");
         Zombiome.Routines.Named("RiftCollapse").Start(
             Routines.Call(biome.groundParticleEffect, place.ipos),
+            // EffectsItem.PlayZBSound("light_pipebomb", place.position, player, World, 1, 300),
+            EffectsItem.PlayZBSound("avalanche", place.position, player, World, 1, 300, 0.5f),
             new WaitForSeconds(1f),
             EffectsCollapse.Rift(player, place, opt)
         );
@@ -154,6 +158,7 @@ public class Cave : MultiEffect {
         Printer.Log(40, "Cave Effect1", place.position, place.ipos, opt.OptionBlock.blocks, opt.OptionShape.shape);
         Zombiome.Routines.Named("Cave").Start(
             Routines.Call(biome.groundParticleEffect, place.ipos),
+            EffectsItem.PlayZBSound("light_pipebomb", place.position, player, World, 1),
             new WaitForSeconds(1f),
             EffectsCollapse.Cave(player, place, opt)
         );

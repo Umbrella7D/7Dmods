@@ -38,6 +38,11 @@ public class Routines {
         action(a1, a2, a3);
         yield break;
     }
+    public static IEnumerator Call<T1,T2,T3,T4>(Action<T1,T2,T3,T4> action, T1 a1, T2 a2, T3 a3, T4 a4, float delay=-1f) {
+        if (delay >=0) yield return new WaitForSeconds(delay);
+        action(a1, a2, a3, a4);
+        yield break;
+    }
 
     public static IEnumerator IfNotRunning(bool[] Lock, IEnumerator iter) {
         /* Would be more efficient to skip starting ! */
