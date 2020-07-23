@@ -65,8 +65,8 @@ public class ZombiomeActivitySelector {
 
         // Projectile - Env
         /* NB: actual projectiles depend on biome, so it is not always fire (cold, poison ...) */
-        WActivities["FireStorm:14"] = zone => new ZBActivity.Projectile.FireStorm(zone).ApplyConfigure();
-        WActivities["Fire:20"] = zone => new ZBActivity.Projectile.Fire(zone).ApplyConfigure();
+        WActivities["FireStorm:12"] = zone => new ZBActivity.Projectile.FireStorm(zone).ApplyConfigure();
+        WActivities["Fire:14"] = zone => new ZBActivity.Projectile.Fire(zone).ApplyConfigure();
 
         // Inventory
         WActivities["FillBag:2"] = zone => new ZBActivity.Entities.FillBag(zone).ApplyConfigure();
@@ -123,7 +123,7 @@ public class ZombiomeActivitySelector {
         D: 3
         C: 5
         W: 3
-        F : 20 +12
+        F : 20 +12 - includes eject/slip and biome projectiles
         I: 5
         SG: 10
         __
