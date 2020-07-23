@@ -3,10 +3,11 @@
 
 <!-- tooltip is on screen, desc is in caracter tab list. hidden="true" is nowhere visible ... -->
 
-<append xpath="/buffs">
+<append xpath="/buffs">	
 
+	<!-- icon="ui_game_symbol_tree", would force visibility   -->
 	<buff name="ZombiomeManager" description_key="buffZBManagerDesc" tooltip_key="buffZBManagerDesc"
-				name_key="buffZBManagerName" icon_color="0,255,0"
+				name_key="buffZBManagerName" icon_color="100,200,200"
 				remove_on_death="false">
 		<stack_type value="ignore"/>		
 		<effect_group>
@@ -21,8 +22,12 @@
 					frequency="5" swallow="false"/>
 		</effect_group>
 	</buff>
-
-	<buff name="nosack"></buff>
+	
+	<buff name="buffZBNosack" remove_on_death="true" hidden="true" 
+		icon="ui_game_symbol_safe" icon_color="200,50,50">
+		<stack_type value="replace"/> <!-- dont use "duration" when routine update continusously ! -->		
+		<duration value="20"/>
+	</buff>
 
 	<!-- ================================================
 		Biome malus
@@ -781,7 +786,7 @@ TODO: use a cvar to control time ?? => compute time until end of phase!
 		</effect_group>
 	</buff>
 
-	<buff name="buffSmallPlayer" remove_on_death="true"
+	<buff name="buffZBDwarf" remove_on_death="true"
 		description_key="buffSmallestDesc" tooltip_key="buffSmallestDesc">
 		<duration value="20"/>
 		<stack_type value="replace"/>

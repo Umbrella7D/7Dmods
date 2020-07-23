@@ -15,6 +15,10 @@ public class Iter {
     //public static Iter<T> On(IEnumerator<T> enumerator) {return new Iter<T>(enumerator);}
     public static IEnumerable<T> On<T>(IEnumerator<T> enumerator) {return new IterWrap<T>(enumerator);}
 
+    public static IEnumerator Empty() {
+        yield break;
+    }
+
     public static bool EverySeconds<T>(ref long last, float dt, Action<T> action, T arg) {
         // -> did execute
         // TODO: if last = 0, randomize first call ?

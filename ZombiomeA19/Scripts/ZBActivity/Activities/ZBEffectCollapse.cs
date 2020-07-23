@@ -34,10 +34,9 @@ Could call Effect1 once per ZChunk, in parralel ?
 */
 
 // default MultiEffect.configure should have 1 replicate
-public class Flood : SingleChunked {
-    // FIXME: at y = 0 !
+public class Flood : SingleChunked {   
     private float gen = 0.08f; // NB: 1% * 40*40 = 1%*1600 = 16 // Randomize !
-    private static int WaterId;
+    // private static int WaterId;
 
     private static bool IsWater(Block block) {
         MaterialBlock mat = block.blockMaterial;
@@ -46,9 +45,11 @@ public class Flood : SingleChunked {
     public Flood(Zone zone) : base(zone) {
         EffectType = EffectType.Collapse;
         Printer.Log(60, "Flood() done");
-        WaterId = Block.GetBlockByName("water", false).blockID;
+        // WaterId = Block.GetBlockByName("water", false).blockID;
     }
     public override IEnumerator Regen(EntityPlayer player, Vector3i zchunk, int iniguess) {
+        yield return ZBActivity.Environment.ZBSounds.Play(ZBiomeInfo.NoiseWater, player.GetPosition(), player, World, 2, 0, 0.5f);
+
         int gen = ZChunk.Size(this.gen);
         Vector3[] positions = ZChunk.Positions(Zombiome.worldSeed, zchunk, gen);
 
@@ -107,6 +108,7 @@ public class RiftCollapse : MultiEffect {
         // Zombiome.Routines.Start(EffectsCollapse.Rift(player, place, opt), "RiftCollapse");
         Zombiome.Routines.Named("RiftCollapse").Start(
             Routines.Call(biome.groundParticleEffect, place.ipos),
+            ZBActivity.Environment.ZBSounds.Play(ZBiomeInfo.NoiseCollapse, place.position, player, World, 1, 20, 0.2f),
             new WaitForSeconds(1f),
             EffectsCollapse.Rift(player, place, opt)
         );
@@ -154,6 +156,7 @@ public class Cave : MultiEffect {
         Printer.Log(40, "Cave Effect1", place.position, place.ipos, opt.OptionBlock.blocks, opt.OptionShape.shape);
         Zombiome.Routines.Named("Cave").Start(
             Routines.Call(biome.groundParticleEffect, place.ipos),
+            ZBActivity.Environment.ZBSounds.Play("light_pipebomb", place.position, player, World, 1, 0, 0.2f),
             new WaitForSeconds(1f),
             EffectsCollapse.Cave(player, place, opt)
         );

@@ -16,7 +16,7 @@ public class ConsoleCmdSoundSelf : ConsoleCmdAbstract {
     */
     public override string GetDescription() {return "ConsoleCmdSoundSelf";}
     public override string[] GetCommands() {
-        return new string[] {"ssound"};
+        return new string[] {"ssound", "sso"};
     }
     public override void Execute(List<string> _params, CommandSenderInfo _senderInfo) {
         EntityPlayerLocal player = GameManager.Instance.World.GetLocalPlayers()[0]; 
@@ -91,4 +91,29 @@ public class ConsoleCmdSoundSelf : ConsoleCmdAbstract {
 
         icons: fireman almanac (joli feu)
         attr  perception / general percep /infiltrator : eye (lighened)
+
+
+EntityFalling block, through particle sound
+
+string name = "impact_stone_on_" + Block.list[block.type].blockMaterial.SurfaceCategory;
+
+impact_earth_on_ ??
+
+block3.blockMaterial.SurfaceCategory + "destroy"
+stonedestroy
+
+Block.list[this.blockValue.type].blockMaterial.SurfaceCategory + "hit" + Block.list[block.type].blockMaterial.SurfaceCategory
+
+
+
+metalhitmetal
+stonehitstone
+
+hitearth sont bien !
+
+
+snakealert
+snakesense: sable qui glisse
+snakeroam: pareil peu fort
+snakeattack: 2 temps
         */

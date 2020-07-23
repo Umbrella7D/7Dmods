@@ -13,6 +13,7 @@ using SdtdUtils;
 namespace SdtdUtils {
 
 public class EffectsItem {
+    public static System.Random Rand = new System.Random();
 
     public class Options {
         public Options Copy() {return this.MemberwiseClone() as Options;}
@@ -155,7 +156,39 @@ machete_swinglight
         SpawnParticle(pos, name, Color.white, null); // "electric_fence_impact"
     }
 
+    public static int SetSoundMode = -1;
+    private static YieldInstruction _WaitFrame = new WaitForEndOfFrame();
 
+    public static IEnumerator PlayZBSoundLoop(string[] sounds, Vector3 pos, EntityPlayer player, World World = null,
+                        int _SetSoundMode = 1, int reduce=0, float rate= 1f) {
+        string sound = sounds[Rand.Next(0,sounds.Length)];
+        return PlayZBSound(sound, pos, player, World, _SetSoundMode, reduce, rate);
+    }
+
+
+    public static IEnumerator PlayZBSound(string[] sounds, Vector3 pos, EntityPlayer player, World World = null,
+                            int _SetSoundMode = 1, int reduce=0, float rate= 1f) {
+        string sound = sounds[Rand.Next(0,sounds.Length)];
+        return PlayZBSound(sound, pos, player, World, _SetSoundMode, reduce, rate);
+    }
+
+    public static IEnumerator PlayZBSound(string sound, Vector3 pos, EntityPlayer player, World World = null,
+                            int _SetSoundMode = 1, int reduce=0, float rate= 1f) {
+        if (rate < 1 && Rand.NextDouble() >= rate) return Iterating.Iter.Empty(); //(new object[]{_WaitFrame}).GetEnumerator();
+        if (World==null) World = GameManager.Instance.World;
+        if (SetSoundMode > -1) _SetSoundMode = SetSoundMode;
+        if (_SetSoundMode == 0) return Routines.Call(
+            World.GetGameManager().PlaySoundAtPositionServer,
+            pos, sound, AudioRolloffMode.Custom, 300 // unnoisy
+        );
+        if (_SetSoundMode == 1) return Routines.Call(
+            World.GetGameManager().PlaySoundAtPositionServer,
+            pos, sound, AudioRolloffMode.Linear, 1 + reduce // less noisy
+        );
+        if (_SetSoundMode == 2) return Routines.Call(Audio.Manager.BroadcastPlay, player, sound); // too noisy
+        return Routines.Call(Audio.Manager.BroadcastPlay, pos, sound, 0f); // Much less unnoisy        
+    }
+    
 }
 
 

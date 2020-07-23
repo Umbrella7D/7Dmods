@@ -30,28 +30,26 @@ public class ZombiomeActivitySelector {
     private static SortedList<string,Func<Zone,ZBEffect>> Activities;
     /* NB SortedList guaranteed i) less memory ii) efficient index access */
 
-    //private static Hashes.Weighted<Func<Zone,ZBEffect>> WeightedActivities;
-
-
     private static Hashes.Weighted<int> ActivitiesWIndex;
     public static void Initialize() {
         SortedList<string,Func<Zone,ZBEffect>> WActivities = new SortedList<string,Func<Zone,ZBEffect>>();
         // I can now associate World in init
 
-        // Ground base
-        WActivities["Peak:4"] = zone => new ZBActivity.Ground.Peak(zone).ApplyConfigure();
-        WActivities["Rift:2"] = zone => new ZBActivity.Ground.Rift(zone).ApplyConfigure();
+        // Ground motion
+        WActivities["Peak:5"] = zone => new ZBActivity.Ground.Peak(zone).ApplyConfigure();
+        WActivities["Rift:3"] = zone => new ZBActivity.Ground.Rift(zone).ApplyConfigure();
         WActivities["Wave:2"] = zone => new ZBActivity.Ground.Wave(zone).ApplyConfigure();
         WActivities["Geyser:1"] = zone => new ZBActivity.Ground.Geyser(zone).ApplyConfigure();
         WActivities["Slime:1"] = zone => new ZBActivity.Projectile.SlimeBlocks(zone).ApplyConfigure();
 
         WActivities["PeakAt:1"] = zone => new ZBActivity.Ground.PeakAt(zone).ApplyConfigure();
         WActivities["PeakProjecting:1"] = zone => new ZBActivity.Ground.PeakProjecting(zone).ApplyConfigure();
+        
         // Deco
         WActivities["TrapLine:3"] = zone => new ZBActivity.Ground.TrapLine(zone).ApplyConfigure();
         WActivities["FloatingDeco:2"] = zone => new ZBActivity.Ground.FloatingDeco(zone).ApplyConfigure(); // FIXME
         WActivities["MovingDeco:3"] = zone => new ZBActivity.Deco.MovingDeco(zone).ApplyConfigure();
-
+        WActivities["Wind:3"] = zone => new ZBActivity.Deco.FlyDeco(zone).ApplyConfigure();
 
         // Collapse
         WActivities["Flood:2"] = zone => new ZBActivity.Collapse.Flood(zone).ApplyConfigure();
@@ -60,20 +58,21 @@ public class ZombiomeActivitySelector {
         WActivities["Cave:2"] = zone => new ZBActivity.Collapse.Cave(zone).ApplyConfigure();
 
         // Projectile - Air
-        // WActivities["Wind:3"] = zone => new ZBActivity.Projectile.Wind(zone).ApplyConfigure();
-        WActivities["Wind:3"] = zone => new ZBActivity.Deco.FlyDeco(zone).ApplyConfigure();
+        // WActivities["Wind:3"] = zone => new ZBActivity.Projectile.Wind(zone).ApplyConfigure();        
 
         WActivities["Meteorite:3"] = zone => new ZBActivity.Projectile.Meteorite(zone).ApplyConfigure();
         WActivities["BlockRain:3"] = zone => new ZBActivity.Projectile.BlockRain(zone).ApplyConfigure();
 
         // Projectile - Env
         /* NB: actual projectiles depend on biome, so it is not always fire (cold, poison ...) */
-        WActivities["FireStorm:20"] = zone => new ZBActivity.Projectile.FireStorm(zone).ApplyConfigure();
-        WActivities["Fire:12"] = zone => new ZBActivity.Projectile.Fire(zone).ApplyConfigure();
+        WActivities["FireStorm:18"] = zone => new ZBActivity.Projectile.FireStorm(zone).ApplyConfigure();
+        WActivities["Fire:10"] = zone => new ZBActivity.Projectile.Fire(zone).ApplyConfigure();
 
         // Inventory
         WActivities["FillBag:2"] = zone => new ZBActivity.Entities.FillBag(zone).ApplyConfigure();
         WActivities["Slippery:2"] = zone => new ZBActivity.Entities.Slippery(zone).ApplyConfigure();
+        WActivities["NoSack:1"] = zone => new ZBActivity.Entities.NoSack(zone).ApplyConfigure();
+        
         // fixme: hand animation not updated when pistol taken back from ground after fall
       
         // Motion / Size
@@ -114,24 +113,22 @@ public class ZombiomeActivitySelector {
 
 
         /* A19 
-
-        ok:
-        Wave Peak RiftCollapse Slime
-
-        errors:
-        puit
-
         changement de meshfile dans ZombieMoe
-        pas de change dans chicken
-
-
         */
 
         /*
         
         -- weights
-        Do we weight per biome ?
-        NB: I need reproducible
+        G: 9 + 3 trap line
+        D: 3
+        C: 5
+        W: 3
+        F : 20 +12
+        I: 5
+        SG: 10
+        __
+
+
 
         20% ground (+peak line, at entity)
         5% collapse (+flood)
@@ -149,8 +146,7 @@ public class ZombiomeActivitySelector {
         /* TODO
         ensevelir (peak avoid ent at entities pos, needs pos)
         true animal ghosts attack disappear
-        AirSupport: insert 1 block below surface !
-        vicious fires that dont kil Zs but buff them with firing
+        AirSupport: insert 1 block below surface !        
         CactusGrowth
         big peaks avec echo
         buff suffocate outside

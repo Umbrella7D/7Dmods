@@ -303,6 +303,27 @@ public class BlockSetter {
         return bounds;
     }
 
+    
+    public static int Marker(Vector3 pos, int h, int val=-1) {
+        /** use damage to store a persistant int at (x,z). Use at y=1 or 253 so that player does not interfere !
+        Return previous marker value */
+        Vector3i ipos = Vectors.ToInt(pos);
+        ipos.y = h;
+        BlockValue BlockValue = GameManager.Instance.World.GetBlock(ipos);
+        int max = BlockValue.Block.MaxDamage;
+        int cur = BlockValue.damage;
+        // Printer.Print("Marker", ipos, cur, "/", max);
+        if (val >= 0) {           
+            int delta =  - cur + val;
+            BlockValue.Block.DamageBlock(
+                GameManager.Instance.World, 0, ipos, BlockValue,
+                delta,
+                -1, false, false
+            );
+        } 
+        return cur;
+    }
+
     // public static Bounds GetBounds(Vector3i where, Block block, int extray = 0, float enlarge=0.05f) {
     //     // probleme en (x,0) ???
     //     Bounds b = new Bounds(Vectors.ToFloat(where), Vectors.Float.One);

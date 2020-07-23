@@ -20,6 +20,58 @@ Create a utils MultiEffect to Spawn articles, called from here
 
 namespace ZBActivity.Environment {
 
+public static class ZBSounds {
+    /** Play: the returned IEnumerator is useless (avoid Routine.Call in start multi),
+    but it starts the interesting one !
+    */
+    public static System.Random Rand = new System.Random();   
+    private static long last = 0;
+    public static IEnumerator Play(string sound, Vector3 pos, EntityPlayer player, World World = null,
+                            int _SetSoundMode = 1, int reduce=0, float rate = 1f) {
+        return Play(new string[]{sound}, pos, player, World, _SetSoundMode, reduce, rate);
+    }
+    public static IEnumerator Play(string[] sounds, Vector3 pos, EntityPlayer player, World World = null,
+                            int _SetSoundMode = 1, int reduce=0, float rate = 1f) {
+        long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        if (now - last > 5) {
+            last = now;
+            Zombiome.Routines.Start(            
+                Loop(sounds, pos, player, World, _SetSoundMode, reduce, rate),
+                "ZBSounds"
+            );
+        }
+        yield break;
+    }
+
+    private static YieldInstruction second = new WaitForSeconds(1f);
+    private static IEnumerator Loop(string[] sounds, Vector3 pos, EntityPlayer player, World World = null,
+                            int _SetSoundMode = 1, int reduce=0, float rate = 1f) {
+        for (int k=0; k<5; k++) {
+            if (rate < 1 && Rand.NextDouble() >= rate) {}
+            else {
+                string sound = sounds[Rand.Next(0,sounds.Length)];
+                PlayZBSound(sound, pos, player, World, _SetSoundMode, reduce);
+            }            
+            yield return second;
+        }       
+    }
+
+    public static void PlayZBSound(string sound, Vector3 pos, EntityPlayer player, World World = null,
+                            int _SetSoundMode = 1, int reduce=0) {
+        if (World==null) World = GameManager.Instance.World;
+        if (EffectsItem.SetSoundMode > -1) _SetSoundMode = EffectsItem.SetSoundMode;
+         // unnoisy
+        if (_SetSoundMode == 0) World.GetGameManager().PlaySoundAtPositionServer(pos, sound, AudioRolloffMode.Custom, 300); 
+        // less noisy
+        else if (_SetSoundMode == 1) World.GetGameManager().PlaySoundAtPositionServer(pos, sound, AudioRolloffMode.Linear, 1 + reduce); 
+         // too noisy
+        else if (_SetSoundMode == 2) Audio.Manager.BroadcastPlay(player, sound);
+        // Much less unnoisy
+        else Audio.Manager.BroadcastPlay(pos, sound, 0f);     
+    }
+
+}
+
 public class Particles : MultiEffect {
     private string particle;
     private Bounds colors;
@@ -112,11 +164,11 @@ public class DwarfPlayer : AtPlayer {
     }
     public override void Effect1(EntityPlayer player, Emplacement place, OptionEffect opt) {
         // Zombiome.Routines.Start(Particles._Next(player)); 
-        player.Buffs.AddBuff("buffSmallPlayer");
+        player.Buffs.AddBuff("buffZBDwarf");
         ParticleGhosts.ManageParticle(player, GhostData.csmokeEffect);
     }
     public override void Configure() {
-        this.opt.OptionEntity.buff = "buffSmallPlayer";
+        this.opt.OptionEntity.buff = "buffZBDwarf";
         Printer.Log(60, "DwarfPlayer Configure: done");
     }
 }

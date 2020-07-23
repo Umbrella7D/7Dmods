@@ -5,13 +5,11 @@ using DMT;
 using System;
 using System.Collections.Generic;
 
-// XUiCWindowSelector.public static void OpenSelectorAndWindow(EntityPlayerLocal _localPlayer, string selectedPage)
-// XUiCWindowSelector.public void OpenSelectedWindow()
+// XUiC_WindowSelector.public static void OpenSelectorAndWindow(EntityPlayerLocal _localPlayer, string selectedPage)
+// XUiC_WindowSelector.public void OpenSelectedWindow()
 
-[HarmonyPatch(typeof(XUiCWindowSelector))] // XUiC_WindowSelector // XUiCWindowSelector
-// [HarmonyPatch("XUiCWindowSelector")]
+[HarmonyPatch(typeof(XUiC_WindowSelector))]
 [HarmonyPatch("OpenSelectorAndWindow")]
-// [HarmonyPatch("OpenSelectorAndWindow")]
 public class BlockBackpack : IHarmony {
     public void Start() {
         Debug.Log(" Loading Patch: " + GetType().ToString());
@@ -22,8 +20,13 @@ public class BlockBackpack : IHarmony {
  
     static bool Prefix(EntityPlayerLocal _localPlayer, string selectedPage) {
         Debug.Log("BlockBackpack Prefix hook");
-        if (_localPlayer.Buffs.HasBuff("nosack")) return false;
+        if (selectedPage != "crafting") return true;
+        if (_localPlayer.Buffs != null && _localPlayer.Buffs.HasBuff("buffZBNosack")) {
+            GameManager.ShowTooltip(_localPlayer, "Your bag's zip is stuck, it won't open.");
+            return false;
+        }
         return true;
+        // could also call windowManager.Close("backpack"); in postfix  ?
     }
 
 }

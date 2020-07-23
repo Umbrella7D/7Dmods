@@ -56,6 +56,13 @@ public class ConsoleCmdZombiome : ConsoleCmdAbstract {
             return;
         }
 
+        if (_params[0] == "ss") { // Debug: select sound implementation
+            SdtdUtils.EffectsItem.SetSoundMode = int.Parse((_params.Count>=2) ? _params[1] : "-1");
+            return;
+        }
+
+        
+
         if (_params[0] == "nz") { // Debug: restrict one zone
             int nz = int.Parse(_params[1]);
             if (nz == 1) Zone.Get = position => new Zone[]{Zone.GetSingle(position)};
